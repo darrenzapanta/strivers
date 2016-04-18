@@ -1,0 +1,31 @@
+@font-face {
+    font-family: rockstyle;
+    src: url('../fonts/AllAgesDEMO.ttf');
+}
+
+.info-wrapper {
+	min-height: 80px;
+	border-radius: 5px;
+	background-color: #196A92;
+	border: 1px solid;
+
+}
+
+
+#logotitle{
+	font-family: rockstyle;
+	font-size:30px;
+}
+
+.accountname{
+	font-size:16px;
+	word-wrap: break-word;
+	font-weight:700;
+
+}
+
+.accountnumber{
+	font-size:16px;
+	word-wrap: break-word;
+	font-weight:700;
+}
