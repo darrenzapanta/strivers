@@ -15,7 +15,12 @@ CREATE TABLE `user` (
 DROP TABLE IF EXISTS `dss`;
 CREATE TABLE `dss` (
   `dss_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `dss_name` varchar(50) NOT NULL,
+  `dss_firstname` varchar(50) NOT NULL,
+  `dss_lastname` varchar(50),
+  `dss_contactno` varchar(50),
+  `dss_email` varchar(50),
+  `dss_birthday` date NOT NULL,
+  `dss_gender` varchar(10) NOT NULL,
   PRIMARY KEY (`dss_id`),
   INDEX(`dss_id`)
 ) ENGINE=InnoDB;
@@ -24,9 +29,13 @@ DROP TABLE IF EXISTS `dsp`;
 CREATE TABLE `dsp` (
   `dsp_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `dss_id` int(10) unsigned,
-  `dsp_name` varchar(50) NOT NULL,
+  `dsp_firstname` varchar(50) NOT NULL,
+  `dsp_lastname` varchar(50) NOT NULL,
+  `dsp_email` varchar(50),
+  `dsp_gender` varchar(10) NOT NULL,
+  `dsp_birthday` date NOT NULL,
   PRIMARY KEY (`dsp_id`),
-  INDEX(`dsp_name`),
+  INDEX(`dsp_firstname`, `dsp_lastname`),
   INDEX(`dsp_id`),
   Foreign key (`dss_id`) references dss(`dss_id`)
 	ON DELETE SET NULL
@@ -37,13 +46,14 @@ CREATE TABLE `dsp` (
 DROP TABLE IF EXISTS `dsp_details`;
 CREATE TABLE `dsp_details` (
   `dsp_id` int(10) unsigned NOT NULL,
-  `dealer_no` varchar(30) NOT NULL,
-  `network` varchar(10) NOT NULL,
-  `percentage` float(12,4),
-  `balance` double(16,4),
-  PRIMARY KEY (`dealer_no`),
+  `dsp_dealer_no` varchar(30) NOT NULL,
+  `dsp_network` varchar(10) NOT NULL,
+  `dsp_contactno` varchar(50) NOT NULL,
+  `dsp_percentage` float(12,4),
+  `dsp_balance` double(16,4),
+  PRIMARY KEY (`dsp_dealer_no`),
   INDEX(`dsp_id`),
-  INDEX(`dealer_no`),
+  INDEX(`dsp_dealer_no`),
   Foreign key (`dsp_id`) references dsp(`dsp_id`)
 	ON UPDATE CASCADE ON DELETE CASCADE
 ) ENGINE=InnoDB;
@@ -108,9 +118,9 @@ CREATE TABLE `transaction_history` (
   PRIMARY KEY (`transaction_id`, `transaction_type`)
 ) ENGINE=InnoDB;
 
-INSERT INTO `strivers`.`dss` (`dss_id`, `dss_name`) VALUES ('0', 'Unassigned');
+INSERT INTO `strivers`.`dss` (`dss_id`, `dss_firstname`, `birthday`, `gender`) VALUES ('0', 'Unassigned', '0000-00-00', 'Male');
 INSERT INTO `strivers`.`global_balance` (`network`, `current_balance`, `global_name`) VALUES ('SUN', '50000', 'SUN');
 INSERT INTO `strivers`.`global_balance` (`network`, `current_balance`, `global_name`) VALUES ('SMART', '50000', 'SMART');
-INSERT INTO `strivers`.`user` (`username`, `password`, `type`,`firstname`, `lastname`) VALUES ('admin', '21232f297a57a5a743894a0e4a801fc3', 'admin','admin','admin');
+INSERT INTO `strivers`.`user` (`username`, `password`, `type`,`firstname`, `lastname`) VALUES ('admin', '21232f297a57a5a743894a0e4a801fc3', 'Mikko','Basilio','admin');
 UPDATE `strivers`.`dss` SET `dss_id`='0' WHERE `dss_id`='1';
 

@@ -1,26 +1,38 @@
-<!DOCTYPE HTML>
-<html>
+
+
 <head>
-   <!--Import Google Icon Font-->
-      <!--<link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">-->
-      <!--Import materialize.css-->
-      <link type="text/css" rel="stylesheet" href="<?php echo base_url(); ?>css/materialize.min.css"  media="screen,projection"/>
-      <script type="text/javascript" src="<?php echo base_url();?>js/jquery-2.1.1.min.js"></script>
-      <script type="text/javascript" src="<?php echo base_url();?>js/materialize.min.js"></script>
-      <!--Let browser know website is optimized for mobile-->
-      <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <!-- Meta, title, CSS, favicons, etc. -->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>STRIVERS </title>
+
+  <!-- Bootstrap core CSS -->
+
+  <link href="<?php echo base_url(); ?>css/bootstrap.min.css" rel="stylesheet">
+
+  <link href="<?php echo base_url(); ?>fonts/css/font-awesome.min.css" rel="stylesheet">
+  <link href="<?php echo base_url(); ?>css/animate.min.css" rel="stylesheet">
+
+  <!-- Custom styling plus plugins -->
+  <link href="<?php echo base_url(); ?>css/custom.css" rel="stylesheet">
+  <link href="<?php echo base_url(); ?>css/icheck/flat/green.css" rel="stylesheet">
+
+
+  <script src="<?php echo base_url(); ?>js/jquery.min.js"></script>
+
+  <!--[if lt IE 9]>
+        <script src="../assets/js/ie8-responsive-file-warning.js"></script>
+        <![endif]-->
+
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
+          <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+          <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+        <![endif]-->
+
 </head>
 
-
-<body>  
-<nav>
-    <div class="nav-wrapper">
-      <!-- Add Strivers logo -->
-        <!--<a class="brand-logo">Register</a>-->
-      <ul id="nav-mobile" class="right hide-on-med-and-down">
-          <li<?php if ($page == 'login') echo ' class="active"'; ?>><a href="./login.php">Login</a></li>
-          <li<?php if ($page == 'register') echo ' class="active"' ?>><a href="./register.php">Register</a></li>
-        </ul>
-    </div>
-  </nav>
-<br>
+<body style="background:#F7F7F7;">

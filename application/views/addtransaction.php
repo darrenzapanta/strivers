@@ -1,123 +1,124 @@
+<div class="right_col container" role="main">
 
-<div class="container">
-	<?php echo $this->session->flashdata('message'); ?>
-	<?php echo form_open('transactionController/addTransaction'); ?>
-		<div class="row">
-	        <div class="input-field col s12">
-	        	<select name="dsp" id="dsp" readonly>
-	        		<option value="0"></option>
-	        		<?php foreach ($dsp as $dsp_item): ?>
-	        			<option value="<?php echo $dsp_item->dsp_id; ?>"><?=$dsp_item->dsp_name?></option>
-	        		<?php endforeach; ?>	
-	        	</select>
-	        	<label for="dsp">Name</label>
-	        </div>
-	    </div>		
-		<div class="row">
-			<div class="input-field col s4">
-				<select name="dealer_no"  id="dealer_no" name="dealer_no" readonly>
-	        		<option value="0"></option>
-	        		<?php foreach ($dsp as $dsp_item): ?>
-	        			<option data-id="<?php echo $dsp_item->dsp_id; ?>" value="<?php echo $dsp_item->dealer_no; ?>"><?=$dsp_item->dealer_no?></option>
-	        		<?php endforeach; ?>	
-	        	</select>
-				<label  for="dealer_no">Dealer No.</label>
-			</div>
-		</div>
-		<div class="row">
-			<div class="input-field col s8">
-				<label class="active">Date of Transaction</label>
-				<input name="date_created" id="date_created" type="date" value="<?php echo date('Y-m-d'); ?>"></input>
-			</div>
-			<div class="input-field col s4">
-				<input name="confirmation_no" id="confirmation_no" type="text" required></input>
-				<label for="confirmation_no">Confirmation No.</label>
-			</div>
-		</div>
+      <div class="page-title">
+            <div class="title_left">
+              <h3>Add Transaction</h3>
+            </div>
+          </div>
+          <div class="clearfix"></div>
+          <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+              <div class="x_panel">
+                <div class="x_title">
+                  <h2>Transaction Details</h2>
+                  <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                  <br />
+                  <?php if($this->session->flashdata('message') !== null): ?>
+                  <div class="row">
+                    <div class="col-md-12 col-sm-12 col-xs-12 alert alert-info">
+                      <?php echo $this->session->flashdata('message'); ?>
+                    </div>
+                  </div>
+                <?php endif; ?>
 
-	    <div class="row">
-	        <div class="input-field col s4">
-		        <input name="amount" id="amount" type="text" class="validate" required>
-		        <label for="amount">Amount</label>
-	        </div>
-	        <div class="input-field col s4">
-	        	<select name="sim" id="sim">
-	        		<?php foreach ($sim as $sim_item): ?>
-	        			<option value="<?php echo $sim_item->global_name; ?>"><?=$sim_item->global_name?></option>
-	        		<?php endforeach; ?>	
-	        	</select>
-	          <label>Global Sim</label>
-	        </div>
+                  <form action="<?php echo base_url(); ?>dssController/addDSS" method="post" class="form-horizontal form-label-left">
 
-	    </div>
-	    <div class="row">
-	        <div class="input-field col s4">
-	          <input  id="begbalance" type="text" class="validate" readonly>
-	          <label  for="balance">Beginning Balance</label>
-	        </div>
-	        <div class="input-field col s4">
-	          <input  id="runbalance" type="text" class="validate" readonly>
-	          <label  for="balance">Running Balance</label>
-	        </div>
-	    </div>	    
-	    <div class="col m12">
-	    <p class="right-align">
-	    	<button class="btn btn-large waves-effect waves-light" type="submit" name="action">Add Transaction</button>
-	    </p>
-	    </div>
-	</form>
-	<?php echo validation_errors(); ?>
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="first-name">Name: <span class="required">*</span>
+                      </label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input type="text" name="name" id="name" required="required" class="form-control col-md-7 col-xs-12">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="last-name">Last Name <span class="required">*</span>
+                      </label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input type="text" id="lastname" name="lastname" required="required" class="form-control col-md-7 col-xs-12">
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12">Gender</label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                            <select name="gender" id="gender" class="form-control">
+                              <option value="Male">Male</option>
+                              <option value="Female">Female</option>
+                            </select>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12">Contact Number</label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input type="text" class="form-control" id="contactno" name="contactno" data-inputmask="'mask' : '(9999) 999-9999'"/>
+                        <span class="fa fa-user form-control-feedback right" aria-hidden="true"></span>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12">E-mail</label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input type="text" class="form-control" id="email" name="email"/>
+                        <span class="fa fa-envelope form-control-feedback right" aria-hidden="true"></span>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12">Date Of Birth <span class="required">*</span>
+                      </label>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <input name="birthday" id="birthday" class="date-picker form-control col-md-7 col-xs-12" required="required" type="text">
+                      </div>
 
-</div>
+                    </div>
+                  <?php if(validation_errors() != NULL): ?>
+                    <div class="form-group">
+                    <div class=" col-md-3 col-sm-3 col-xs-12">
+                    </div>
+                      <div class="col-md-6 col-sm-6 col-xs-12">
+                        <div class="alert alert-danger fade in">
+                            <?php echo validation_errors(); ?>
+                        </div>
+                      </div>
+                    </div>
+                  <?php endif; ?>
 
-<script>
-    var path = "<?php echo site_url(); ?>";
-	var app = "transactionsController";
+                    <div class="ln_solid"></div>
+                    <div class="form-group">
+                      <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
+                        <button type="submit" class="btn btn-success">Submit</button>
+                      </div>
+                    </div>
 
+                  </form>
 
-    $('#dsp').change(function(e){
-    	$('#dealer_no option[data-id= "' + $('#dsp').val() + '"]').attr("selected","selected")
-    	$('select').material_select();
-    })
-
-    $('#sim').change(function(e){
-    	var global_name = $("#sim").val();
-		$.ajax({
-			method: 'POST',
-	  		url: path + "/globalController/getBalance",
-	  		cache: false,
-	  		data: {global_name: global_name},
-	  		async:false,
-	  		success: function (data){
-	  			if(data.status == "failed"){
-	  				alert("Error has occurred.");
-	  			}else{
-	  				console.log(data.status);
-	  				$("#begbalance").val(data.status);
-	  				if(!isNaN($("#amount").val())){
-	  					var running_balance = data.status - $("#amount").val();
-	  					$('#runbalance').val(running_balance);
-	  				}else{
-	  					$('#runbalance').val(data.status);
-	  				}
-	  			}
-	  		},
-	  		error: function (data){
-	  			alert(data);
-	  		} 
-		});    	
-    });
-
-    $('#amount').blur(function(e){
-		if(!isNaN($("#amount").val())){
-			var running_balance = $("#begbalance").val() - $("#amount").val();
-			$('#runbalance').val(running_balance);
-		}else{
-			$('#runbalance').val(data.status);
-		}    	
-    })
-    $(document).ready(function() {
-      $('select').material_select();
-      $('#sim').change();
-    });
-</script>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <script type="text/javascript" src="<?php echo base_url(); ?>js/moment/moment.min.js"></script>
+        <script type="text/javascript" src="<?php echo base_url(); ?>js/datepicker/daterangepicker.js"></script>
+        <script type="text/javascript" src="<?php echo base_url(); ?>js/autocomplete/jquery.autocomplete.js"></script>
+        <script src="<?php echo base_url(); ?>js/input_mask/jquery.inputmask.js"></script>
+          <script>
+            $(document).ready(function() {
+              $('#birthday').daterangepicker({
+                singleDatePicker: true,
+        
+                showDropdowns: true
+              }, function(start, end, label) {
+                console.log(start.toISOString(), end.toISOString(), label);
+              });
+              $(":input").inputmask();
+              var names = [];
+			<?php foreach ($dsp as $dsp_item): ?>
+				names.push("<?php echo $dsp_item->dsp_firstname." ".$dsp_item->dsp_lastname; ?>");
+			<?php endforeach; ?>
+              $("#name").autocomplete({
+              	lookup: names
+              });
+            });
+            $(function() {
+            });
+          </script>
+  

@@ -12,12 +12,13 @@ class DspController extends CI_Controller {
    if(!($this->session->userdata('logged_in') == true)){
       $this->load->view('errors/index');
    }
+   $GLOBALS['data']['name'] = $this->session->userdata('firstname')." ".$this->session->userdata('lastname') ;
  }
 
  function index(){
-   $data['dss'] = $this->dss->getAllDSS();
-   $this->load->view('templates/header');
-   $this->load->view('DSPPanel', $data);
+   $GLOBALS['data']['dss'] = $this->dss->getAllDSS();
+   $this->load->view('templates/header', $GLOBALS['data']);
+   $this->load->view('adddsp', $GLOBALS['data']);
    $this->load->view('templates/footer');
  }
  
@@ -26,8 +27,12 @@ class DspController extends CI_Controller {
    //This method will have the credentials validation
    $this->load->library('form_validation');
  
-   $this->form_validation->set_rules('dealer_no', 'Dealer No', 'trim|required');
-   $this->form_validation->set_rules('full_name', 'Name', 'trim|required');
+   $this->form_validation->set_rules('dealerno', 'Dealer No', 'trim|required|callback_check_dealerno');
+   $this->form_validation->set_rules('firstname', 'First Name', 'trim|required');
+   $this->form_validation->set_rules('lastname', 'Last Name', 'trim|required');
+   $this->form_validation->set_rules('birthday', 'Date of Birth', 'trim|required');
+   $this->form_validation->set_rules('email', 'E-mail', 'trim');
+   $this->form_validation->set_rules('contactno', 'Contact Number', 'trim');
    $this->form_validation->set_rules('network', 'Network', 'trim|required|callback_check_network');
    $this->form_validation->set_rules('dss', 'DSS', 'trim|callback_check_dss');
    $this->form_validation->set_rules('percentage', 'Percentage', 'trim|numeric');
@@ -36,36 +41,39 @@ class DspController extends CI_Controller {
    if($this->form_validation->run() == FALSE)
    {
      //Field validation failed.
-     $data['page'] = "adddsp";
-     $data['dss'] = $this->dss->getAllDSS();
-     $this->load->view('templates/header', $data);
+     $GLOBALS['data']['page'] = "adddsp";
+     $GLOBALS['data']['dss'] = $this->dss->getAllDSS();
+     $this->load->view('templates/header', $GLOBALS['data']);
      $this->load->view('adddsp');
      $this->load->view('templates/footer');
    }
    else
    {
-     $name = $this->input->post('full_name');
+     $firstname = $this->input->post('firstname');
+     $lastname = $this->input->post('lastname');
      $network = $this->input->post('network');
-     $dealer_no = $this->input->post('dealer_no');
+     $email = $this->input->post('email');
+     $contactno = $this->input->post('contactno');
+     $birthday = $this->input->post('birthday');
+     $dealerno = $this->input->post('dealerno');
      $percentage = $this->input->post('percentage');
      $balance = $this->input->post('balance');
      $dss = $this->input->post('dss');
-     if($dss == 0){
-        $data = array(
-                 'dsp_name' => $name,
-                 'dss_id' => 0,      
-                 );
-     }else{
-        $data = array(
-                 'dsp_name' => $name,
-                 'dss_id' => $dss,
-                 );
-     }
+     $gender = $this->input->post('gender');
+      $data = array(
+               'dsp_firstname' => $firstname,
+               'dsp_lastname' => $lastname,
+               'dsp_birthday' => $birthday,
+               'dsp_email' => $email,
+               'dss_id' => $dss,
+               'dsp_gender' => $gender
+               );
      $data2 =  array(
-                    'network' => $network,
-                    'dealer_no' => $dealer_no,
-                    'percentage' => $percentage,
-                    'balance' => $balance
+                    'dsp_network' => $network,
+                    'dsp_dealer_no' => $dealerno,
+                    'dsp_percentage' => $percentage,
+                    'dsp_balance' => $balance,
+                    'dsp_contactno' => $contactno
                  );
      $ret = $this->dsp->addDSP($data, $data2);
      if($ret === false){
@@ -79,8 +87,8 @@ class DspController extends CI_Controller {
      }
     $this->session->set_flashdata('message', 'Added Successfully.');
     redirect('/landingController/addDSP');
+      }
    }
- }
 
 function check_network($network){
   if($network == "sun" || $network == "smart"){
@@ -89,6 +97,15 @@ function check_network($network){
    $this->form_validation->set_message('check_network', 'Invalid Network.');
    return false;
   }
+ }
+
+ function check_dealerno($dealerno){
+    if($this->dsp->checkDealerNo($dealerno))
+      return true;
+    else{
+      $this->form_validation->set_message('check_dealerno', 'Duplicate Dealer Number.');
+      return false;
+    }
  }
 
  function check_dss($dss){
@@ -105,29 +122,32 @@ function check_network($network){
 
  function editDSP()
  {
-     $dsp_id = $this->input->post('dsp_id');
-     $name = $this->input->post('full_name');
+     $firstname = $this->input->post('firstname');
+     $lastname = $this->input->post('lastname');
      $network = $this->input->post('network');
-     $dealer_no = $this->input->post('dealer_no');
+     $email = $this->input->post('email');
+     $contactno = $this->input->post('contactno');
+     $birthday = $this->input->post('birthday');
+     $dealerno = $this->input->post('dealerno');
      $percentage = $this->input->post('percentage');
      $balance = $this->input->post('balance');
      $dss = $this->input->post('dss');
-     if($dss == 0){
-        $data = array(
-                 'dsp_name' => $name,
-                 'dss_id' => 0,      
-                 );
-     }else{
-        $data = array(
-                 'dsp_name' => $name,
-                 'dss_id' => $dss,
-                 );
-     }
+     $dsp_id =$this->input->post('dsp_id');
+     $gender = $this->input->post('gender');
+      $data = array(
+               'dsp_firstname' => $firstname,
+               'dsp_lastname' => $lastname,
+               'dsp_birthday' => $birthday,
+               'dsp_email' => $email,
+               'dss_id' => $dss,
+               'dsp_gender' => $gender,
+               );
      $data2 =  array(
-                    'network' => $network,
-                    'dealer_no' => $dealer_no,
-                    'percentage' => $percentage,
-                    'balance' => $balance
+                    'dsp_network' => $network,
+                    'dsp_dealer_no' => $dealerno,
+                    'dsp_percentage' => $percentage,
+                    'dsp_balance' => $balance,
+                    'dsp_contactno' => $contactno
                  );
      $ret = $this->dsp->editDSP($data, $data2, $dsp_id);
      if($ret === false){

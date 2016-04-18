@@ -12,27 +12,44 @@ class DssController extends CI_Controller {
    if(!($this->session->userdata('logged_in') == true)){
       $this->load->view('errors/index');
    }
+   $GLOBALS['data']['name'] = $this->session->userdata('firstname')." ".$this->session->userdata('lastname') ;
  }
 
  function addDSS()
  {
    $this->load->library('form_validation');
 
-   $this->form_validation->set_rules('full_name', 'Name', 'trim|required');
+   $this->form_validation->set_rules('firstname', 'First Name', 'trim|required');
+   $this->form_validation->set_rules('lastname', 'Last Name', 'trim|required');
+   $this->form_validation->set_rules('gender', 'Gender', 'trim|required|alpha');
+   $this->form_validation->set_rules('contactno', 'Contact Number', 'trim');
+   $this->form_validation->set_rules('email', 'E-mail', 'trim|valid_email');
+   $this->form_validation->set_rules('birthday', 'Date of Birth', 'trim|required');
 
    if($this->form_validation->run() == FALSE)
    {
      //Field validation failed.
-     $data['page'] = "adddss";
-     $this->load->view('templates/header', $data);
+     $GLOBALS['data']['page'] = "adddss";
+     $this->load->view('templates/header', $GLOBALS['data']);
      $this->load->view('adddss');
      $this->load->view('templates/footer');
    }
    else
    {
-     $name = $this->input->post('full_name');
+     $firstname = $this->input->post('firstname');
+     $lastname = $this->input->post('lastname');
+     $contactno = $this->input->post('contactno');
+     $email = $this->input->post('email');
+     $birthday = $this->input->post('birthday');
+     $gender = $this->input->post('gender');
+     $f_birthday = date("Y-m-d", strtotime($birthday));
      $data = array(
-              'dss_name' => $name,  
+              'dss_firstname' => $firstname,
+              'dss_lastname' => $lastname,
+              'dss_contactno' => $contactno,
+              'dss_email' => $email,
+              'dss_birthday' => $f_birthday,  
+              'dss_gender' => $gender
               );
 
      $ret = $this->dss->addDSS($data);
@@ -47,9 +64,19 @@ class DssController extends CI_Controller {
 
  function editDSS(){
    $dss_id = $this->input->post('dss_id');
-   $name = $this->input->post('full_name');
+   $firstname = $this->input->post('firstname');
+   $lastname = $this->input->post('lastname');
+   $gender = $this->input->post('gender');
+   $contactno = $this->input->post('contactno');
+   $email = $this->input->post('email');
+   $birthday = $this->input->post('birthday');
    $data = array( 
-            'dss_name' => $name
+            'dss_firstname' => $firstname,
+            'dss_lastname' => $lastname,
+            'dss_gender' => $gender,
+            'dss_contactno' => $contactno,
+            'dss_email' => $email,
+            'dss_birthday' => $birthday
             );
    $ret = $this->dss->editDSS($data,$dss_id);
      if($ret === false){

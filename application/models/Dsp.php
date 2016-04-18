@@ -13,6 +13,19 @@ Class dsp extends CI_Model
 	  $this->db->update('dsp', $data);
   }
 
+  function checkDealerNo($dealerno){
+  	$this->db->select('*');
+  	$this->db->from('dsp_details');
+  	$this->db->where('dsp_dealer_no', $dealer_no);
+  	$query = $this->db->get();
+  	if($query -> num_rows() > 0)
+	{
+	  return false;
+	}else{
+		return true;
+	}  	
+  }
+
   function addDSP($data, $data2){
 	  	$this->db->trans_start();
 	  	$this->db->insert('dsp', $data);

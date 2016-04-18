@@ -1,170 +1,309 @@
+     <style>
+      .daterangepicker.dropdown-menu {
+          z-index: 1200 !important;
+        }
+      </style>   
 
-<div class="container">
-	<table id="dsptable" class="responsive-table bordered centered highlight">
-        <thead>
-          <tr>
+      <div class="right_col" role="main">
+        <div class="">
+          <div class="page-title">
+            <div class="title_left">
+              <h3>
+                    Edit/View DSP
+                </h3>
+            </div>
+          </div>
+          <div class="clearfix"></div>
+          <div class="row">
+          <div class="col-md-12 col-sm-12 col-xs-12">
+              <div class="x_panel">
+                <div class="x_title">
+                  <h2>DSP Information</h2>
+                  <div class="clearfix"></div>
+                </div>
+                  <table id="datatable-buttons" class="table table-striped table-bordered table-hover">
+                    <thead>
+                      <tr>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Network</th>
+                        <th>Dealer No.</th>
+                        <th>DSS</th>
+                        <th>Balance</th>
+                        <th>Percentage</th>
+                        <th>E-Mail</th>
+                        <th>Birthdate</th>
+                        <th>Gender</th>
+                        <th>Contact No</th>
+                        
+                      </tr>
+                    </thead>
+                    <tbody class="dsp">
+                     <?php foreach ($dsp as $dsp_item): ?>
+                      <?php if($dsp_item->dsp_id <> 0): ?>
+                        <tr class="modal-trigger" data-toggle="modal" data-target="#modal1" data-id="<?php echo $dsp_item->dsp_id; ?>" id="<?php echo $dsp_item->dsp_id; ?>">
+                            <td class="dsp_firstname"><?php echo $dsp_item->dsp_firstname; ?></td>
+                            <td class="dsp_lastname"><?php echo $dsp_item->dsp_lastname; ?></td>
+                            <td class="network"><?php echo strtoupper($dsp_item->dsp_network); ?></td>
+                            <td class="dealerno"><?php echo $dsp_item->dsp_dealer_no; ?></td>
+                            <td class="dss"><?php echo $dsp_item->dss_firstname." ".$dsp_item->dss_lastname; ?></td>
+                            <td class="balance"><?php echo $dsp_item->dsp_balance; ?></td>
+                            <td class="percentage"><?php echo $dsp_item->dsp_percentage; ?></td>
+                            <td class="email"><?php echo $dsp_item->dsp_email; ?></td>
+                            <td class="birthday"><?php echo $dsp_item->dsp_birthday; ?></td>
+                            <td class="gender"><?php echo $dsp_item->dsp_gender; ?></td>
+                            <td class="contactno"><?php echo $dsp_item->dsp_contactno; ?></td>
+                            
+                            
+                        </tr>
+                        <?php endif ?>
+                     <?php endforeach; ?>  
 
-              <th data-field="dealer_no">Dealer No.</th>
-              <th data-field="name">Name</th>
-              <th data-field="dealer_no">DSS Name</th>
-              <th data-field="network">Network</th>
-              <th data-field="percentage">Percentage</th>
-              <th data-field="balance">Balance</th>
-          </tr>
-        </thead>
-        <!-- PHP append na lang based sa results sa DB, tsaka PHP din sa clickable table,  !-->
-        <tbody class="dsp">
-         <?php foreach ($dsp as $dsp_item): ?>
-         	<tr class="modal-trigger" href="#modal1" data-id="<?php echo $dsp_item->dsp_id; ?>" id="<?php echo $dsp_item->dsp_id; ?>">
-	          	<td class="dealer_no"><?php echo $dsp_item->dealer_no; ?></td>
-	          	<td class="dsp_name"><?php echo $dsp_item->dsp_name; ?></td>
-	          	<input type="hidden" value="<?php echo $dsp_item->dss_id; ?>" class="dss_id">
-	          	<td class="dsp_name"><?php echo $dsp_item->dss_name; ?></td>
-	          	<td class="network"><?php echo strtoupper($dsp_item->network); ?></td>
-	          	<input type="hidden" value="<?php echo $dsp_item->percentage; ?>" class="percentage">
-	          	<td><?php echo $dsp_item->percentage; ?>%</td>
-	          	<td class="balance"><?php echo $dsp_item->balance; ?></td>
-          	</tr>
-         <?php endforeach; ?>	 
+                    </tbody>                    
 
-        </tbody>
-         
-      </table>          
-  	<div id="modal1" class="modal">
-  		<div class="modal-content">
-      		<h4>Edit DSP details</h4>
-      		<form class="col s12">
-      			<div class="row">
-      				<input id="modalid" type="hidden">
-					<div class="input-field col s4">
-						<input id="newdealer_no" type="text" class="validate">
-						<label for="newdealer_no">Dealer No.</label>
-					</div>
-				</div>
-				<div class="row">
-			        <div class="input-field col s12">
-			        	<input id="newfull_name" type="text" class="validate">
-			        	<label for="newfull_name">Full Name</label>
-			        </div>
-			    </div>
-			    <div class="row">
-			    	<div class="input-field col s12">
-			    		<select name="newdss" id="newdss" class="dsp">
-								<?php foreach ($dss as $dss_item): ?>
-			        				<option value="<?php echo $dss_item->dss_id; ?>"><?=$dss_item->dss_name?></option>
-								<?php endforeach; ?>
-			    		</select>
-			    	<label>Assigned DSS</label>
-			    	</div>
-			    </div>
-			    <div class="row">
-			        <div class="input-field col s4">
-			        	<select id="newnetwork">
-			        		<option value="sun">SUN</option>
-			        		<option value="smart">SMART</option>
-			        	</select>
-			          <label>Network</label>
-			        </div>			    
-			        <div class="input-field col s4">
-				        <input id="newpercentage" type="number" min="0" max="100" class="validate">
-				        <label for="newpercentage">Percentage</label>
-			        </div>
-			        <div class="input-field col s4">
-			          <input id="newbalance" type="text" class="validate">
-			          <label for="balance">Balance</label>
-			        </div>
-			    </div>
-			    <div class="col m12">
-			    <p class="right-align">
-			    	<button id="edit" class="btn btn-large waves-effect waves-light" type="button" name="action">Edit Details</button>
-			    	<button id="delete" class="btn btn-large waves-effect waves-red red" type="button" name="action">Delete DSP</button>
-			    </p>
-			    </div>
-      		</form>
-      	</div>
-  	</div>
-  </div>
-<script>
- $(document).ready(function(){
-    // the "href" attribute of .modal-trigger must specify the modal ID that wants to be triggered
-    //$('.modal-trigger').openModal();
-    //$('#modal1').openModal();
-    $('select').material_select();
-    $(document).on('click', '.modal-trigger', function(e) {
-	    e.preventDefault();
-	    //you have to trigger modal like this
-	    //$(".modal-trigger").leanModal();
-	    var dataid = $(this).data('id');
-	    var dss_id = $("#"+ dataid + " .dss_id").val();
-	    var network = $("#"+ dataid + " .network").html();
-	    $('#modalid').val(dataid);
-	    $('#newdealer_no').val($("#"+ dataid + " .dealer_no").html());
-	    $('#newfull_name').val($("#"+ dataid + " .dsp_name").html());
-	    $('#newdss option[value= "' + dss_id + '"]').attr("selected","selected");
-	    $('#newnetwork option[value= "' + network + '"]').attr("selected","selected");
-	    $('#newpercentage').val($("#"+ dataid + " .percentage").val());
-	    $('#newbalance').val($("#"+ dataid + " .balance").html());
-	    $('#modal1').openModal();
-	    $('select').material_select();
-	    Materialize.updateTextFields()
-	  });
+                  </table>
+                </div>
+                </div>       
+      <div id="modal1" class="modal fade" role="dialog">
+        <div class="modal-dialog modal-lg">
+
+          <!-- Modal content-->
+          <div class="modal-content">
+          <input type="hidden" id="modalid">
+            <div class="modal-header">
+              <button type="button" class="close" data-dismiss="modal">&times;</button>
+              <h4 class="modal-title">Edit DSS</h4>
+            </div>
+            <div class="modal-body container-fluid">
+              <div class="form-group">
+                      <label for="newfirstname">First Name:</label>
+                      <input class="form-control" name="newlastname" id="newfirstname" type="text"/>
+              </div>
+              <div class="form-group">
+                      <label for="newlastname">Last Name:</label>
+                      <input class="form-control" name="newlastname" id="newlastname" type="text" class="validate">
+              </div>
+              <div class="form-group">
+                <label for="newgender">Gender:</label>
+                    <select name="newgender" id="newgender" class="form-control">
+                      <option value="Male">Male</option>
+                      <option value="Female">Female</option>
+                    </select>
+              </div>
+              <div class="form-group">
+                      <label for="newdealerno">Dealer No:</label>
+                      <input class="form-control" name="newdealerno" id="newdealerno" type="text" class="validate">
+              </div>              
+              <div class="form-group">
+                <label for="newcontactno">Contact No:</label>
+               <input type="text" class="form-control" id="newcontactno" name="newcontactno" data-inputmask="'mask' : '(9999) 999-9999'"/>
+              </div>
+              <div class="form-group">
+                <label>E-mail</label>
+                 <input name="newemail" id="newemail" class="form-control" type="text"/>
+
+              </div>                
+              <div class="form-group">
+                <label>Date Of Birth:</label>
+                 <input name="newbirthday" id="newbirthday" class="date-picker form-control col-md-7 col-xs-12" required="required" type="text"/>
+
+              </div>
+              <br/>
+              <br/>
+              <div class="form-group col-md-6 col-sm-6 col-xs-12">
+                <label class="control-label col-md-3 col-sm-3 col-xs-12">Assign DSS</label>
+                <div class="col-md-6 col-sm-6 col-xs-12">
+                  <select name="newdss" id="newdss" class="form-control">
+                    <?php foreach ($dss as $dss_item): ?>
+                          <option value="<?php echo $dss_item->dss_id; ?>"><?=$dss_item->dss_firstname." ".$dss_item->dss_lastname?></option>
+                    <?php endforeach; ?>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group col-md-6 col-sm-6 col-xs-12 pull-left">
+                <label class="control-label col-md-2 col-sm-6 col-xs-12">Network:</label>
+                <div class="col-md-4 col-sm-6 col-xs-12">
+                  <select name="newnetwork" id="newnetwork" class="form-control">
+                    <option value="sun">SUN</option>
+                    <option value="smart" >SMART</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group col-md-6 col-sm-6 col-xs-12 pull-left">
+                <label class="control-label col-md-3 col-sm-6 col-xs-12">Balance:</label>
+                <div class="col-md-4 col-sm-6 col-xs-12">
+                <input name="newbalance" id="newbalance" type="text" class="form-control" value="0">
+                </div>
+              </div>
+              <div class="form-group col-md-4 col-sm-6 col-xs-12">
+                <label class="control-label col-md-4 col-sm-6 col-xs-12">Percentage:</label>
+                <div class="col-md-5 col-sm-5 col-xs-12">
+                  <input name="newpercentage" id="newpercentage" type="number" min="0" max="100" class="form-control" value="0" step="0.01" min="0">
+                  
+                </div>
+              </div>               
 
 
+            </div>
+            <div class="modal-footer">
+              <div class="row">
+                <button id="edit" type="button" class="btn btn-success" data-dismiss="modal">Save</button>
+                <button id="delete" type="button" class="btn btn-danger" data-dismiss="modal">Delete</button>
+              </div>
+            </div>
+          </div>
 
-  });
+        </div>
+      </div>      
+        <script src="<?php echo base_url(); ?>js/datatables/jquery.dataTables.min.js"></script>
+        <script src="<?php echo base_url(); ?>js/datatables/dataTables.bootstrap.js"></script>
+        <script src="<?php echo base_url(); ?>js/datatables/dataTables.buttons.min.js"></script>
+        <script src="<?php echo base_url(); ?>js/datatables/buttons.bootstrap.min.js"></script>
+        <script src="<?php echo base_url(); ?>js/datatables/jszip.min.js"></script>
+        <script src="<?php echo base_url(); ?>js/datatables/pdfmake.min.js"></script>
+        <script src="<?php echo base_url(); ?>js/datatables/vfs_fonts.js"></script>
+        <script src="<?php echo base_url(); ?>js/datatables/buttons.html5.min.js"></script>
+        <script src="<?php echo base_url(); ?>js/datatables/buttons.print.min.js"></script>
+        <script src="<?php echo base_url(); ?>js/datatables/dataTables.fixedHeader.min.js"></script>
+        <script src="<?php echo base_url(); ?>js/datatables/dataTables.keyTable.min.js"></script>
+        <script src="<?php echo base_url(); ?>js/datatables/dataTables.responsive.min.js"></script>
+        <script src="<?php echo base_url(); ?>js/datatables/responsive.bootstrap.min.js"></script>
+        <script src="<?php echo base_url(); ?>js/datatables/dataTables.scroller.min.js"></script>
+        <script>
+          var handleDataTableButtons = function() {
+              "use strict";
+              0 !== $("#datatable-buttons").length && $("#datatable-buttons").DataTable({
+                dom: "Bfrtip",
+                buttons: [{
+                  extend: "copy",
+                  className: "btn-sm"
+                }, {
+                  extend: "csv",
+                  className: "btn-sm"
+                }, {
+                  extend: "excel",
+                  className: "btn-sm"
+                }, {
+                  extend: "pdf",
+                  className: "btn-sm"
+                }, {
+                  extend: "print",
+                  className: "btn-sm"
+                }],
+                responsive: !0
+              })
+            },
+            TableManageButtons = function() {
+              "use strict";
+              return {
+                init: function() {
+                  handleDataTableButtons()
+                }
+              }
+            }();
+        </script>
 
-    var path = "<?php echo site_url(); ?>";
-	var app = "dspController";
-	$("#edit").click(function(e){
-		var name = $("#newfull_name").val();
-		var network = $("#newnetwork").val();
-		var dealerNo = $("#newdealer_no").val();
-		var percentage = $("#newpercentage").val();
-		var balance = $("#newbalance").val();
-		var dsp_id = $("#modalid").val();
-		var dss = $("#newdss").val();
-		if(dss == 0)
-			dss = null;
-		$.ajax({
-			method: 'POST',
-	  		url: path + "/" + app + "/editDSP",
-	  		cache: false,
-	  		data: {dsp_id: dsp_id, full_name: name, network: network, dealer_no: dealerNo, percentage: percentage, balance: balance, dss:dss},
-	  		async:false,
-	  		success: function (data){
-	  			if(data.status == "success"){
-	  				location.reload();
-	  			}else{
-	  				alert("Error has occurred.");
-	  			}
+        <script type="text/javascript">
+          $(document).ready(function() {
+            $('#datatable-buttons').dataTable();
+          });
+          TableManageButtons.init();
+        </script>
+        <script type="text/javascript" src="<?php echo base_url(); ?>js/moment/moment.min.js"></script>
+       <script type="text/javascript" src="<?php echo base_url(); ?>js/datepicker/daterangepicker.js"></script>
+        <script src="<?php echo base_url(); ?>js/input_mask/jquery.inputmask.js"></script>
 
-	  		},
-	  		error: function (data){
-	  			alert(data);
-	  		} 
-		});
-	});
-	$("#delete").click(function(e){
-		var target = $("#modalid").val();
-		$.ajax({
-			method: 'POST',
-	  		url: path + "/" + app + "/deleteDSP",
-	  		cache: false,
-	  		data: {dsp_id: target},
-	  		async:false,
-	  		success: function (data){
-	  			if(data.status == "success"){
-	  				alert("Deleted.");
-	  				location.reload();
-	  				$('#modal1').closeModal();
-	  			}else{
-	  				alert("Error has occurred.");
-	  			}
-	  		},
-	  		error: function (data){
-	  			alert("Error has occurred.");
-	  		} 
-		});
-	});
-</script>
+          <script>
+            $(document).ready(function() {
+              $('#newbirthday').daterangepicker({
+                singleDatePicker: true,
+                format: 'YYYY-MM-DD',
+                showDropdowns: true,
+                container:'#modal1'
+              });
+              $(":input").inputmask();
 
+              $(document).on('click', '.modal-trigger', function(e) {
+                e.preventDefault();
+                var dataid = $(this).data('id');
+                var dsp_id = $("#"+ dataid + " .dsp_id").val();
+                var dss_id = $("#"+ dataid + " .dss_id").val();
+                var gender = $("#"+ dataid + " .gender").html();
+                var network = $("#"+ dataid + " .network").html();
+                $('#modalid').val(dataid);
+                $('#newfirstname').val($("#"+ dataid + " .dsp_firstname").html());
+                $('#newlastname').val($("#"+ dataid + " .dsp_lastname").html());
+                $('#newemail').val($("#"+ dataid + " .email").html());
+                $('#newgender option[value= "' + gender + '"]').attr("selected","selected");
+                $('#newcontactno').val($("#"+ dataid + " .contactno").html());
+                $('#newbirthday').val($("#"+ dataid + " .birthday").html());
+                $('#newdealerno').val($("#"+ dataid + " .dealerno").html());
+                $('#newnetwork option[value= "' + network + '"]').attr("selected","selected");
+                $('#newbalance').val($("#"+ dataid + " .balance").html());
+                $('#newpercentage').val($("#"+ dataid + " .percentage").html());
+                $('#newdss option[value= "' + dss_id + '"]').attr("selected","selected");
+
+
+              });    
+
+              var path = "<?php echo site_url(); ?>";
+              var app = "dspController";
+              $("#edit").click(function(e){
+                var dsp_id = $("#modalid").val();
+                var firstname = $("#newfirstname").val();
+                var lastname = $("#newlastname").val();
+                var gender = $("#newgender").val();
+                var contactno = $("#newcontactno").val();
+                var email = $("#newemail").val();
+                var birthday = $("#newbirthday").val();
+                var percentage = $('#newpercentage').val();
+                var balance = $('#newbalance').val();
+                var dss = $('#newdss').val();
+                var dealerno = $('#newdealerno').val();
+                var network = $('#newnetwork').val();
+                $.ajax({
+                  method: 'POST',
+                    url: path + "/" + app + "/editDSP",
+                    cache: false,
+                    data: {dsp_id: dsp_id, firstname: firstname, lastname: lastname, gender:gender, contactno: contactno, email: email, birthday: birthday, percentage: percentage, balance: balance, dss: dss, network: network, dealerno: dealerno},
+                    async:false,
+                    success: function (data){
+                      if(data.status == "success"){
+                        alert("Edited.");
+                        location.reload();
+                      }else{
+                        alert("Error has occurred.");
+                      }
+
+                    },
+                    error: function (data){
+                      alert(data);
+                    } 
+                });
+              });
+
+              $("#delete").click(function(e){
+                var dsp_id = $("#modalid").val();
+                var name = $("#newfull_name").val();
+                $.ajax({
+                  method: 'POST',
+                    url: path + "/" + app + "/deleteDSP",
+                    cache: false,
+                    data: {dsp_id: dsp_id},
+                    async:false,
+                    success: function (data){
+                      if(data.status == "success"){
+                        alert("Deleted.");
+                        location.reload();
+                      }else{
+                        alert("Error has occurred.");
+                      }
+                    },
+                    error: function (data){
+                      alert(data);
+                    } 
+                });          
+            });
+          });
+          </script> 
+  
