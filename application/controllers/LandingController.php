@@ -22,8 +22,8 @@ class LandingController extends CI_Controller {
    for($i = 0; $i < 8; $i++){
       $date = date('Y-m-d', strtotime('-'.$i.' days'));
       $arr = array();
+      $flag = false;
       foreach($data as $data_item){
-         
          $flag = false;
          $f_date1 = date_create_from_format('Y-m-d', $date);
          $f_date2 = date_create_from_format('Y-m-d', $data_item->date_created);
