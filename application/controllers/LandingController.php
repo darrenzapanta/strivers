@@ -7,11 +7,11 @@ class LandingController extends CI_Controller {
    parent::__construct();
    $this->load->helper('url');
    $this->load->library('session');
-   $this->load->model('dsp','',TRUE);
-   $this->load->model('dss','',TRUE);
-   $this->load->model('globalsim','',TRUE);
-   $this->load->model('transaction','',TRUE);
-   $this->load->model('purchaseorder','',TRUE);
+   $this->load->model('Dsp','',TRUE);
+   $this->load->model('Dss','',TRUE);
+   $this->load->model('Globalsim','',TRUE);
+   $this->load->model('Transaction','',TRUE);
+   $this->load->model('Purchaseorder','',TRUE);
    if(!($this->session->userdata('logged_in') == true)){
       $this->load->view('errors/index');
    }
@@ -45,18 +45,18 @@ class LandingController extends CI_Controller {
 
  }
  function index(){
-   $GLOBALS['data']['sim'] = $this->globalsim->getAllSim();
-   $GLOBALS['data']['transaction'] =$this->transaction->getTransactionCount();
+   $GLOBALS['data']['sim'] = $this->Globalsim->getAllSim();
+   $GLOBALS['data']['transaction'] =$this->Transaction->getTransactionCount();
    $date1 = date('Y-m-d', strtotime('-1 week'));
    $date2 = date('Y-m-d');
-   $sim = $this->globalsim->getAllSim();
+   $sim = $this->Globalsim->getAllSim();
    $data2 = array();
    $topDSP = array();
    foreach($sim as $sim_item){
       $temp = array();
-      $result = $this->transaction->getTransactionForGraph($date1, $date2, $sim_item->global_name);
+      $result = $this->Transaction->getTransactionForGraph($date1, $date2, $sim_item->global_name);
       $temp['global_name'] = $sim_item->global_name;
-      $temp['data'] = $this->transaction->getTopDSP($date1, $date2, $sim_item->global_name);
+      $temp['data'] = $this->Transaction->getTopDSP($date1, $date2, $sim_item->global_name);
       $topDSP[] = $temp;
       array_push($data2, array($sim_item->global_name,$this->graphWeekly($result)));
    }
@@ -73,7 +73,7 @@ class LandingController extends CI_Controller {
  {
    $this->load->helper(array('form'));
    $GLOBALS['data']['page'] = "adddsp";
-   $GLOBALS['data']['dss'] = $this->dss->getAllDSS();
+   $GLOBALS['data']['dss'] = $this->Dss->getAllDSS();
    $this->load->view('templates/header', $GLOBALS['data']);
    $this->load->view('adddsp', $GLOBALS['data']);
    $this->load->view('templates/footer');
@@ -87,7 +87,7 @@ class LandingController extends CI_Controller {
 
   function viewDSS(){
 
-   $GLOBALS['data']['dss'] = $this->dss->getAllDSS();
+   $GLOBALS['data']['dss'] = $this->Dss->getAllDSS();
    $this->load->view('templates/header', $GLOBALS['data']);
    $this->load->view('viewdss', $GLOBALS['data']);
    $this->load->view('templates/footer');
@@ -96,8 +96,8 @@ class LandingController extends CI_Controller {
  function editDSP()
  {
 
-   $GLOBALS['data']['dsp'] = $this->dsp->getAllDSP();
-   $GLOBALS['data']['dss'] = $this->dss->getAllDSS();
+   $GLOBALS['data']['dsp'] = $this->Dsp->getAllDSP();
+   $GLOBALS['data']['dss'] = $this->Dss->getAllDSS();
    $this->load->view('templates/header', $GLOBALS['data']);
    $this->load->view('editdsp', $GLOBALS['data']);
    $this->load->view('templates/footer');
@@ -108,24 +108,24 @@ class LandingController extends CI_Controller {
  function addTransaction(){
    $this->load->helper(array('form'));
    $GLOBALS['data']['page'] = "addtransaction";
-   $GLOBALS['data']['sim'] = $this->globalsim->getAllSim();
-   $GLOBALS['data']['dsp'] = $this->dsp->getAllDSP();
+   $GLOBALS['data']['sim'] = $this->Globalsim->getAllSim();
+   $GLOBALS['data']['dsp'] = $this->Dsp->getAllDSP();
    $this->load->view('templates/header', $GLOBALS['data']);
    $this->load->view('addtransaction', $GLOBALS['data']);
    $this->load->view('templates/footer');
  }
 
   function viewTransaction(){
-   $GLOBALS['data']['sim'] = $this->globalsim->getAllSim();
-   $GLOBALS['data']['dsp'] = $this->dsp->getAllDSP();
+   $GLOBALS['data']['sim'] = $this->Globalsim->getAllSim();
+   $GLOBALS['data']['dsp'] = $this->Dsp->getAllDSP();
    $this->load->view('templates/header', $GLOBALS['data']);
    $this->load->view('detailedtransaction', $GLOBALS['data']);
    $this->load->view('templates/footer');
  }
    function detailedTransaction(){
    $GLOBALS['data']['trans'] = array();
-   $GLOBALS['data']['sim'] = $this->globalsim->getAllSim();
-   $GLOBALS['data']['dsp'] = $this->dsp->getAllDSP();
+   $GLOBALS['data']['sim'] = $this->Globalsim->getAllSim();
+   $GLOBALS['data']['dsp'] = $this->Dsp->getAllDSP();
    $this->load->view('templates/header', $GLOBALS['data']);
    $this->load->view('detailedtransaction', $GLOBALS['data']);
    $this->load->view('templates/footer');
@@ -142,15 +142,15 @@ class LandingController extends CI_Controller {
 
   function addPurchaseOrder(){
    $this->load->helper(array('form'));
-   $GLOBALS['data']['sim'] = $this->globalsim->getAllSim();
+   $GLOBALS['data']['sim'] = $this->Globalsim->getAllSim();
    $this->load->view('templates/header', $GLOBALS['data']);
    $this->load->view('addpurchaseorder', $GLOBALS['data']);
    $this->load->view('templates/footer');
  }
 
   function viewPurchaseOrder(){
-   $GLOBALS['data']['po'] = $this->purchaseorder->getAllPurchaseOrder();
-   $GLOBALS['data']['sim'] = $this->globalsim->getAllSim();
+   $GLOBALS['data']['po'] = $this->Purchaseorder->getAllPurchaseOrder();
+   $GLOBALS['data']['sim'] = $this->Globalsim->getAllSim();
    $this->load->view('templates/header', $GLOBALS['data']);
    $this->load->view('viewpurchaseorder', $GLOBALS['data']);
    $this->load->view('templates/footer');
