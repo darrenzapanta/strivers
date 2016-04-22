@@ -1,5 +1,5 @@
 <?php
-Class dsp extends CI_Model
+Class Dsp extends CI_Model
 {
   public function __construct() {
     parent::__construct();
