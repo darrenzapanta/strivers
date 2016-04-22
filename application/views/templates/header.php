@@ -67,9 +67,6 @@
 
           <!-- menu prile quick info -->
           <div class="profile">
-            <div class="profile_pic">
-              <img src="<?php echo base_url(); ?>images/img.jpg" alt="..." class="img-circle profile_img">
-            </div>
             <div class="profile_info">
               <span>Welcome,</span>
               <h2><?php echo $name; ?></h2>
@@ -78,6 +75,10 @@
           <!-- /menu prile quick info -->
 
           <br />
+          <br />
+          <br />
+          <br />
+
 
           <!-- sidebar menu -->
           <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
@@ -111,19 +112,25 @@
                   <ul class="nav child_menu" style="display: none">
                     <li><a href="<?php echo site_url(); ?>LandingController/addTransaction">Add Transaction</a>
                     </li>
-                    <li><a href="<?php echo site_url(); ?>LandingController/viewTransation">View/Edit Transactions</a>
+                    <li><a href="<?php echo site_url(); ?>LandingController/viewTransaction">View/Edit Transactions</a>
                     </li>
+
                   </ul>
                 </li>
-                <li><a><i class="fa fa-bar-chart-o"></i> Manage P . O . <span class="fa fa-chevron-down"></span></a>
+                <li><a><i class="fa fa-list"></i> Manage P . O . <span class="fa fa-chevron-down"></span></a>
                   <ul class="nav child_menu" style="display: none">
-                    <li><a href="tables.html">Add Purchase Order</a>
+                    <li><a href="<?php echo site_url(); ?>LandingController/addPurchaseOrder">Add Purchase Order</a>
                     </li>
-                    <li><a href="tables_dynamic.html">View/Edit Purchase Order</a>
+                    <li><a href="<?php echo site_url(); ?>LandingController/viewPurchaseOrder">View/Edit Purchase Order</a>
                     </li>
                   </ul>
                 </li>
-                <li><a><i class="fa fa-bar-chart-o"></i> Search</a>
+                <li><a><i class="fa fa-unlock-alt"></i> Admin Panel <span class="fa fa-chevron-down"></span></a>
+                  <ul class="nav child_menu" style="display: none">
+                    <li><a href="<?php echo site_url(); ?>LandingController/addPurchaseOrder">Manage Sim Cards</a>
+                    </li>
+                  </ul>
+                </li>
                 </li>                
               </ul>
             </div>
@@ -153,7 +160,7 @@
             <ul class="nav navbar-nav navbar-right">
               <li class="">
                 <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                  <img src="<?php echo site_url(); ?>images/img.jpg" alt=""><?php echo $name; ?>
+                  <?php echo $name; ?>
                   <span class=" fa fa-angle-down"></span>
                 </a>
                 <ul class="dropdown-menu dropdown-usermenu pull-right">

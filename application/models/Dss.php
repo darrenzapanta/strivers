@@ -16,6 +16,10 @@ Class dss extends CI_Model
 
   }
 
+  function getDSSCount(){
+  	return $this->db->count_all('dss');
+  }
+
   function deleteDSS($dss_id, $data){
   	$this->db->trans_start();
   	if($data != null){

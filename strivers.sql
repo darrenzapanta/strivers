@@ -75,10 +75,8 @@ CREATE TABLE `load_transaction` (
   `global_name` varchar(15) NOT NULL,
   `amount` double(16,4) NOT NULL,
   `confirm_no` varchar(30) NOT NULL,
-  `date_created` date NOT NULL,
+  `date_created` datetime NOT NULL,
   `dealer_no` varchar(30) NOT NULL,
-  `beg_bal` double(16,4) NOT NULL,
-  `run_bal` double(16,4) NOT NULL,
   `user_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`transaction_id`),
   INDEX(`date_created`, `global_name`),
@@ -96,10 +94,10 @@ CREATE TABLE `purchase_order` (
   `global_name` varchar(15) NOT NULL,
   `amount` double(16,4) NOT NULL,
   `date_created` datetime NOT NULL,
-  `beg_bal` double(16,4) NOT NULL,
-  `run_bal` double(16,4) NOT NULL,
+  `user_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`purchase_id`),
   INDEX(`date_created`),
+  Foreign key (`user_id`) references `user`(`user_id`),
   Foreign key (`global_name`) references global_balance(`global_name`)
 	ON UPDATE CASCADE
 ) ENGINE=InnoDB;
@@ -118,7 +116,7 @@ CREATE TABLE `transaction_history` (
   PRIMARY KEY (`transaction_id`, `transaction_type`)
 ) ENGINE=InnoDB;
 
-INSERT INTO `strivers`.`dss` (`dss_id`, `dss_firstname`, `birthday`, `gender`) VALUES ('0', 'Unassigned', '0000-00-00', 'Male');
+INSERT INTO `strivers`.`dss` (`dss_id`, `dss_firstname`, `dss_birthday`, `dss_gender`) VALUES ('0', 'Unassigned', '0000-00-00', 'Male');
 INSERT INTO `strivers`.`global_balance` (`network`, `current_balance`, `global_name`) VALUES ('SUN', '50000', 'SUN');
 INSERT INTO `strivers`.`global_balance` (`network`, `current_balance`, `global_name`) VALUES ('SMART', '50000', 'SMART');
 INSERT INTO `strivers`.`user` (`username`, `password`, `type`,`firstname`, `lastname`) VALUES ('admin', '21232f297a57a5a743894a0e4a801fc3', 'Mikko','Basilio','admin');

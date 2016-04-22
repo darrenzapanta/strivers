@@ -165,7 +165,9 @@
             $(document).ready(function() {
               $('#newbirthday').daterangepicker({
                 singleDatePicker: true,
-                format: 'YYYY-MM-DD',
+                locale: {
+                  format: 'YYYY-MM-DD',
+                },
                 showDropdowns: true,
                 container:'#modal1'
               });

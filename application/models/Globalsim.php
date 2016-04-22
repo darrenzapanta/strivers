@@ -37,10 +37,17 @@ Class globalSim extends CI_Model
     return $query->result();
   }
 
-  function updateBalance($data, $global_name){
-
+  function updateBalance($data, $global_name, $op = null){
+    $curr_bal = $this->getCurrentBalance($global_name);
+    if($op == "sub"){
+      $data2 = array ('current_balance' => $curr_bal - $data['amount']);
+    }else if($op == "add"){
+      $data2 = array ('current_balance' => $curr_bal + $data['amount']);
+    }else{
+      return false;
+    }
 	  $this->db->where('global_name', $global_name);
-	  $this->db->update('global_balance', $data);
+	  $this->db->update('global_balance', $data2);
 	  return true;
 
   }

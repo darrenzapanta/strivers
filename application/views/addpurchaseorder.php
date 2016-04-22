@@ -2,7 +2,7 @@
 
       <div class="page-title">
             <div class="title_left">
-              <h3>Add Transaction</h3>
+              <h3>Add Purchase Order</h3>
             </div>
           </div>
           <div class="clearfix"></div>
@@ -10,7 +10,7 @@
             <div class="col-md-12 col-sm-12 col-xs-12">
               <div class="x_panel">
                 <div class="x_title">
-                  <h2>Transaction Details</h2>
+                  <h2>Purchase Order Details</h2>
                   <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
@@ -23,33 +23,17 @@
                   </div>
                 <?php endif; ?>
 
-                  <form action="<?php echo base_url(); ?>TransactionController/addTransaction" method="post" class="form-horizontal form-label-left">
-                    <input type="hidden" id="dsp_id" name="dsp_id">
+                  <form action="<?php echo base_url(); ?>PurchaseOrderController/addPurchaseOrder" method="post" class="form-horizontal form-label-left">
                     <div class="form-group">
-                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Name: <span class="required">*</span>
-                      </label>
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="sim">Sim:</label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
-                        <input type="text" name="name" id="name" required="required" class="form-control col-md-7 col-xs-12">
+                        <select name="sim" id="sim" class="form-control">
+                          <?php foreach ($sim as $sim_item): ?>
+                                <option value="<?php echo $sim_item->global_name; ?>"><?=$sim_item->global_name?></option>
+                          <?php endforeach; ?>
+                        </select>
                       </div>
-                    </div>
-                    <div class="form-group col-md-6 col-sm-6 col-xs-12 pull-left">
-                      <label class="control-label col-md-6 col-sm-6 col-xs-12" for="dealerno">Dealer No:</label>
-                      <div class="col-md-5 col-sm-5 col-xs-1">
-                        <input type="text" name="dealerno" id="dealerno"  readonly class="form-control">
-                      </div>
-                    </div>
-                    <div class="form-group col-md-4 col-sm-6 col-xs-12">
-                      <label class="control-label col-md-3 col-sm-6 col-xs-12">Sim:</label>
-                      <div class="col-md-5 col-sm-5 col-xs-12">
-                        <input type="text" class="form-control" readonly id="sim" name="sim"/>
-                      </div>
-                    </div>                    
-                    <div class="form-group">
-                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="confirmationno">Confirmation No:</label>
-                      <div class="col-md-6 col-sm-6 col-xs-12">
-                        <input type="text" name="confirmationno" id="confirmationno"  required="required" class="form-control col-md-7 col-xs-12">
-                      </div>
-                    </div>                      
+                    </div>                                   
                     <div class="form-group">
                       <label class="control-label col-md-3 col-sm-3 col-xs-12" for="amount">Amount:</label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
@@ -71,7 +55,7 @@
                     <div class="form-group col-md-6 col-sm-6 col-xs-12 pull-left">
                       <label class="control-label col-md-6 col-sm-6 col-xs-12">Transaction Date:</label>
                       <div class="col-md-4 col-sm-6 col-xs-12">
-                        <input name="transactiondate" id="transactiondate" class="date-picker form-control col-md-7 col-xs-12" required="required" type="text">
+                        <input name="purchaseorderdate" id="purchaseorderdate" class="form-control col-md-7 col-xs-12" required="required" type="text">
                       </div>
                     </div>
 
@@ -107,24 +91,11 @@
         </div>
         <script type="text/javascript" src="<?php echo base_url(); ?>js/moment/moment.min.js"></script>
         <script type="text/javascript" src="<?php echo base_url(); ?>js/datepicker/daterangepicker.js"></script>
-        <script type="text/javascript" src="<?php echo base_url(); ?>js/autocomplete/jquery.autocomplete.js"></script>
-        <script src="<?php echo base_url(); ?>js/input_mask/jquery.inputmask.js"></script>
           <script>
               var path = "<?php echo site_url(); ?>";
-              var app = "TransactionController";
-              var names = [];
-              <?php foreach ($dsp as $dsp_item): ?>
-                var data = [];
-                var data2 = [];
-                data2["name"] = "<?php echo $dsp_item->dsp_dealer_no; ?>";
-                data2["dsp_id"] = "<?php echo $dsp_item->dsp_id; ?>";
-                data2["network"] = "<?php echo $dsp_item->dsp_network; ?>";
-                data["value"] = "<?php echo $dsp_item->dsp_firstname." ".$dsp_item->dsp_lastname." (".$dsp_item->dsp_network.")"; ?>";
-                data["data"] = data2;
-                names.push(data);
-              <?php endforeach; ?>
+              var app = "PurchaseOrderController";
             $(document).ready(function() {
-              $('#transactiondate').daterangepicker({
+              $('#purchaseorderdate').daterangepicker({
                 singleDatePicker: true,
                 locale: {
                     format: 'YYYY-MM-DD hh:mm:ss',
@@ -137,34 +108,15 @@
               }, function(start, end, label) {
                 console.log(start.toISOString(), end.toISOString(), label);
               });
-              $(":input").inputmask();
-              var currentdate = new Date(); 
+              $("#sim").change();
+                var currentdate = new Date(); 
               var datetime = currentdate.getFullYear() + "-"
                       + ('0' + (currentdate.getMonth()+1)).slice(-2)  + "-" 
                       + ('0' + currentdate.getDate()).slice(-2) + " "  
                       + currentdate.getHours() + ":"  
                       + ('0' + (currentdate.getMinutes()+1)).slice(-2) + ":"  
                       + ('0' + (currentdate.getSeconds()+1)).slice(-2);
-              $("#transactiondate").val(datetime)
-              $("#name").autocomplete({
-              	lookup: names, 
-                onSelect: function(suggestion){
-                  $("#dealerno").val(suggestion.data["name"]);
-                  $("#sim").val((suggestion.data["network"]).toUpperCase())
-                  $("#dsp_id").val(suggestion.data["dsp_id"]);
-                  $("#sim").change();
-                },
-                onInvalidateSelection: function(){
-                  $("#dealerno").val("");
-                  $("#dsp_id").val("");
-                  $("#sim").val("");
-                  $("#runbal").val("");
-                  $("#begbal").val("");
-
-
-                },
-                showNoSuggestionNotice: true     
-              });
+              $("#purchaseorderdate").val(datetime)
             });
           $('#sim').change(function(e){
             var global_name = $("#sim").val();
@@ -180,10 +132,10 @@
                   }else{
                     $("#begbal").val(data.status);
                     if(!isNaN($("#amount").val())){
-                      var running_balance = parseFloat(data.status) - parseFloat($("#amount").val());
+                      var running_balance = parseFloat(data.status) + parseFloat($("#amount").val());
                       $('#runbal').val(running_balance);
                     }else{
-                      $('#runbal').val(parseFloat(data.status));
+                      $('#runbal').val(data.status);
                     }
                   }
                 },
@@ -195,10 +147,10 @@
 
           $('#amount').blur(function(e){
           if(!isNaN($("#amount").val())){
-            var running_balance = parseFloat($("#begbal").val()) - parseFloat($("#amount").val());
+            var running_balance = parseFloat($("#begbal").val()) + parseFloat($("#amount").val());
             $('#runbal').val(running_balance);
           }else{
-            $('#runbal').val(parseFloat(data.status));
+            $('#runbal').val(data.status);
           }     
           });
           </script>

@@ -9,7 +9,7 @@
           <div class="page-title">
             <div class="title_left">
               <h3>
-                    Edit/View Transactions
+                    Edit/View Purchase Order
                 </h3>
             </div>
           </div>
@@ -18,33 +18,26 @@
           <div class="col-md-12 col-sm-12 col-xs-12">
               <div class="x_panel">
                 <div class="x_title">
-                  <h2>Transaction Details</h2>
+                  <h2>Purhcase Order Details</h2>
                   <div class="clearfix"></div>
                 </div>
-                  <table data-order='[[ 5, "desc" ]]' id="datatable-buttons" class="table table-striped table-bordered table-hover">
+                  <table data-order='[[ 2, "desc" ]]' id="datatable-buttons" class="table table-striped table-bordered table-hover">
                     <thead>
                       <tr>
-                        <th>DSP Name</th>
-                        <th>Dealer No.</th>
-                        <th>Network</th>
+                        <th>Sim</th>
                         <th>Amount</th>
-                        <th>Confirmation No</th>
-                        <th>Transaction Date</th>
+                        <th>Purchase Order Date</th>
                         
                       </tr>
                     </thead>
                     <tbody class="transaction">
-                     <?php foreach ($trans as $trans_item): ?>
-                        <tr class="modal-trigger" data-toggle="modal" data-target="#modal1" data-id="<?php echo $trans_item->transaction_id; ?>" id="<?php echo $trans_item->transaction_id; ?>">
-                            <input class="dsp_id" type="hidden" value="<?php echo $trans_item->dsp_id ?>">
-                            <td class="dsp_name"><?php echo $trans_item->dsp_firstname." ".$trans_item->dsp_lastname; ?></td>
-                            <td class="dealerno"><?php echo $trans_item->dealer_no; ?></td>
-                            <td class="sim"><?php echo strtoupper($trans_item->global_name); ?></td>
-                            <td class="amount"><?php echo $trans_item->amount; ?></td>
-                            <td class="confirmationno"><?php echo $trans_item->confirm_no; ?></td>
-                            <td class="transactiondate"><?php echo $trans_item->date_created; ?></td>
+                     <?php foreach ($po as $po_item): ?>
+                        <tr class="modal-trigger" data-toggle="modal" data-target="#modal1" data-id="<?php echo $po_item->purchase_id; ?>" id="<?php echo $po_item->purchase_id; ?>">
                             
-                            
+                            <td class="sim"><?php echo strtoupper($po_item->global_name); ?></td>
+                            <td class="amount"><?php echo $po_item->amount; ?></td>
+                            <td class="purchaseorderdate"><?php echo $po_item->date_created; ?></td>
+
                         </tr>
                      <?php endforeach; ?>  
 
@@ -61,34 +54,26 @@
           <input type="hidden" id="modalid">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal">&times;</button>
-              <h4 class="modal-title">Edit DSS</h4>
+              <h4 class="modal-title">Edit Purchase Order</h4>
             </div>
             <div class="modal-body container-fluid">
               <div class="form-group">
-                      <input id="newdsp_id" type="hidden">
-                      <label for="newdsp">Name:</label>
-                      <input class="form-control" name="newdsp" id="newdsp" type="text"/>
-              </div>
-              <div class="form-group">
-                      <label for="newdealerno">Dealer No:</label>
-                      <input type="text" name="newdealerno" id="newdealerno"  readonly class="form-control">
-              </div>
-              <div class="form-group">
                       <label for="newsim">Sim:</label>
-                      <input type="text" class="form-control" readonly id="newsim" name="newsim"/>
-              </div>              
-              <div class="form-group">
-                <label for="confirmation no">Confirmation No:</label>
-               <input type="text" class="form-control" id="newconfirmationno" name="newconfirmationno"/>
-              </div>
-              <div class="form-group">
-                <label>Transaction Date:</label>
-                 <input name="newtransactiondate" id="newtransactiondate" class="date-picker form-control" required="required" type="text"/>
-              </div>
+                        <select name="newsim" id="newsim" class="form-control">
+                          <?php foreach ($sim as $sim_item): ?>
+                                <option value="<?php echo $sim_item->global_name; ?>"><?=$sim_item->global_name?></option>
+                          <?php endforeach; ?>
+                        </select>             
+              </div>  
               <div class="form-group">
                 <label for="newamount">Amount:</label>
                <input type="text" class="form-control" id="newamount" name="newamount"/>
-              </div>              
+              </div>                            
+              <div class="form-group">
+                <label>Purchase Order Date:</label>
+                 <input name="newpurchaseorderdate" id="newpurchaseorderdate" class="date-picker form-control" required="required" type="text"/>
+              </div>
+            
             </div>
 
             <div class="modal-footer">
@@ -161,18 +146,7 @@
 
           <script>
               var path = "<?php echo site_url(); ?>";
-              var app = "TransactionController";
-              var names = [];
-              <?php foreach ($dsp as $dsp_item): ?>
-                var data = [];
-                var data2 = [];
-                data2["name"] = "<?php echo $dsp_item->dsp_dealer_no; ?>";
-                data2["dsp_id"] = "<?php echo $dsp_item->dsp_id; ?>";
-                data2["network"] = "<?php echo $dsp_item->dsp_network; ?>";
-                data["value"] = "<?php echo $dsp_item->dsp_firstname." ".$dsp_item->dsp_lastname." (".$dsp_item->dsp_network.")"; ?>";
-                data["data"] = data2;
-                names.push(data);
-              <?php endforeach; ?>          
+              var app = "PurchaseOrderController";
             $(document).ready(function() {
               $('#newtransactiondate').daterangepicker({
                 singleDatePicker: true,
@@ -184,59 +158,30 @@
                 timePickerSeconds: true,                
                 "timePickerIncrement": 1,
                 showDropdowns: true
-              });
-              $("#newdsp").autocomplete({
-                lookup: names, 
-                onSelect: function(suggestion){
-                  $("#newdealerno").val(suggestion.data["name"]);
-                  $("#newsim").val((suggestion.data["network"]).toUpperCase())
-                  $("#newdsp_id").val(suggestion.data["dsp_id"]);
-                  $("#newsim").change();
-                },
-                onInvalidateSelection: function(){
-                  $("#newdealerno").val("");
-                  $("#newdsp_id").val("");
-                  $("#newsim").val("");
-                  $("#newrunbal").val("");
-                  $("#newbegbal").val("");
-
-
-                },
-                showNoSuggestionNotice: true     
-              });              
+              });  
 
               $(document).on('click', '.modal-trigger', function(e) {
                 e.preventDefault();
                 var dataid = $(this).data('id');
-                
+                var sim = $("#"+ dataid + " .sim").html();
                 $('#modalid').val(dataid);
-                $('#newdsp').val($("#"+ dataid + " .dsp_name").html());
-                $('#newdsp_id').val($("#"+ dataid + " .dsp_id").val());
-                $('#newdealerno').val($("#"+ dataid + " .dealerno").html());
-                $('#newsim').val($("#"+ dataid + " .sim").html());
-                $('#newconfirmationno').val($("#"+ dataid + " .confirmationno").html());
-                $('#newtransactiondate').val($("#"+ dataid + " .transactiondate").html());
+                $('#newsim option[value= "' + sim + '"]').attr("selected","selected");
+                $('#newpurchaseorderdate').val($("#"+ dataid + " .purchaseorderdate").html());
                 $('#newamount').val($("#"+ dataid + " .amount").html());
-                console.log($("#newdsp_id").val());
-                console.log(dataid);
 
               });    
 
               $("#edit").click(function(e){
 
-                var trans_id = $("#modalid").val();
-                var dsp_id = $('#newdsp_id').val();
-                var transactiondate = $("#newtransactiondate").val();
+                var purchase_id = $("#modalid").val();
+                var purchaseorderdate = $("#newpurchaseorderdate").val();
                 var amount = $("#newamount").val();
-                var confirmationno = $("#newconfirmationno").val();
                 var sim = $("#newsim").val();
-                var dealerno = $('#newdealerno').val();
-                console.log($('#newdsp_id').val());
                 $.ajax({
                   method: 'POST',
-                    url: path + "/" + app + "/editTransaction",
+                    url: path + "/" + app + "/editPurchaseOrder",
                     cache: false,
-                    data: {confirmationno: confirmationno, trans_id: trans_id, dsp_id: dsp_id, transactiondate: transactiondate, amount: amount, sim: sim, dealerno: dealerno},
+                    data: {purchase_id: purchase_id, purchaseorderdate:purchaseorderdate, amount:amount, sim:sim},
                     async:false,
                     success: function (data){
                       if(data.status == "success"){
@@ -254,12 +199,12 @@
               });
 
               $("#delete").click(function(e){
-                var trans_id = $("#modalid").val();
+                var purchase_id = $("#modalid").val();
                 $.ajax({
                   method: 'POST',
-                    url: path + "/" + app + "/deleteTransaction",
+                    url: path + "/" + app + "/deletePurchaseOrder",
                     cache: false,
-                    data: {trans_id: trans_id},
+                    data: {purchase_id: purchase_id},
                     async:false,
                     success: function (data){
                       if(data.status == "success"){

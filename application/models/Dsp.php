@@ -16,7 +16,7 @@ Class dsp extends CI_Model
   function checkDealerNo($dealerno){
   	$this->db->select('*');
   	$this->db->from('dsp_details');
-  	$this->db->where('dsp_dealer_no', $dealer_no);
+  	$this->db->where('dsp_dealer_no', $dealerno);
   	$query = $this->db->get();
   	if($query -> num_rows() > 0)
 	{

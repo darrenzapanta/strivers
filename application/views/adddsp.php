@@ -144,7 +144,9 @@
             $(document).ready(function() {
               $('#birthday').daterangepicker({
                 singleDatePicker: true,
-        		format: 'YYYY-MM-DD',
+                locale: {
+        		      format: 'YYYY-MM-DD',
+                },
                 showDropdowns: true
               }, function(start, end, label) {
                 console.log(start.toISOString(), end.toISOString(), label);

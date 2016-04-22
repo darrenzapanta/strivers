@@ -55,7 +55,7 @@ class addDsp extends CI_Controller {
                  );
      }
      $data2 =  array(
-                    'network' => $network,
+                    'network' => strtoupper($network),
                     'dealer_no' => $dealer_no,
                     'percentage' => $percentage,
                     'balance' => $balance

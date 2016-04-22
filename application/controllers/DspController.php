@@ -69,7 +69,7 @@ class DspController extends CI_Controller {
                'dsp_gender' => $gender
                );
      $data2 =  array(
-                    'dsp_network' => $network,
+                    'dsp_network' => strtoupper($network),
                     'dsp_dealer_no' => $dealerno,
                     'dsp_percentage' => $percentage,
                     'dsp_balance' => $balance,
@@ -143,7 +143,7 @@ function check_network($network){
                'dsp_gender' => $gender,
                );
      $data2 =  array(
-                    'dsp_network' => $network,
+                    'dsp_network' => strtoupper($network),
                     'dsp_dealer_no' => $dealerno,
                     'dsp_percentage' => $percentage,
                     'dsp_balance' => $balance,

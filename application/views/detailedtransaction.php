@@ -9,11 +9,69 @@
           <div class="page-title">
             <div class="title_left">
               <h3>
-                    Edit/View Transactions
+                    Detailed Transactions
                 </h3>
             </div>
           </div>
           <div class="clearfix"></div>
+          <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+              <div class="x_panel">
+                    <div class="x_title">
+                      <h2>Data Builder</h2>
+                      <div class="clearfix"></div>
+                    </div> 
+                  <h1>Search</h1>     
+                  <div class="form-group">
+                       <div class="col-md-4 col-sm-9 col-xs-12">
+                        <select id="option1" class="form-control type">
+                          <option value="date">Date Range:</option>
+                        </select>
+                      </div>
+                      <div class="col-md-8 col-sm-9 col-xs-12">
+                        <input class="daterange form-control">
+                      </div>
+                    </div>
+                    <br>
+                    <br>
+                    <br>
+                    <div class="form-group">
+                      <div class="col-md-12 col-sm-9 col-xs-12">
+                        <div class="checkbox col-md-9">
+                          <label>
+                            <input id="balchk" type="checkbox" value=""> Include Beginning and Running Balance. </input>
+                          </label>
+                        </div>                        
+                        <div class="checkbox col-md-9">
+                          <label>
+                            <input id="pochk" type="checkbox" value=""> Include Purchase Order records. </input>
+                          </label>
+                        </div>
+                      
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <div class="btn-group col-md-12 col-sm-12 col-xs-12" id="network" data-toggle="buttons">
+                        <label class="control-label col-md-1 col-sm-9 col-xs-12"><h5>Network:</h5></label>
+                            <?php foreach ($sim as $sim_item): ?>
+                                <label class="btn btn-default col-md-1 col-sm-9 col-xs-12">
+                                  <input type="radio" name="network" value="<?php echo $sim_item->global_name; ?>"><?php echo $sim_item->global_name; ?>
+                                </label>
+                            <?php endforeach; ?>
+
+                      </div>
+                    </div>
+                    <div class="clearfix"></div>
+                    <div class="ln_solid"></div>
+                    <div class="form-group">
+                      <div class="col-md-12 col-sm-9 col-xs-12 col-md-offset-5">
+                        <button id="searchbtn" type="submit" class="btn btn-success col-md-2">Submit</button>
+                      </div>
+                    </div>
+              </div>
+
+            </div>
+          </div>
           <div class="row">
           <div class="col-md-12 col-sm-12 col-xs-12">
               <div class="x_panel">
@@ -21,38 +79,14 @@
                   <h2>Transaction Details</h2>
                   <div class="clearfix"></div>
                 </div>
-                  <table data-order='[[ 5, "desc" ]]' id="datatable-buttons" class="table table-striped table-bordered table-hover">
-                    <thead>
-                      <tr>
-                        <th>DSP Name</th>
-                        <th>Dealer No.</th>
-                        <th>Network</th>
-                        <th>Amount</th>
-                        <th>Confirmation No</th>
-                        <th>Transaction Date</th>
-                        
-                      </tr>
-                    </thead>
-                    <tbody class="transaction">
-                     <?php foreach ($trans as $trans_item): ?>
-                        <tr class="modal-trigger" data-toggle="modal" data-target="#modal1" data-id="<?php echo $trans_item->transaction_id; ?>" id="<?php echo $trans_item->transaction_id; ?>">
-                            <input class="dsp_id" type="hidden" value="<?php echo $trans_item->dsp_id ?>">
-                            <td class="dsp_name"><?php echo $trans_item->dsp_firstname." ".$trans_item->dsp_lastname; ?></td>
-                            <td class="dealerno"><?php echo $trans_item->dealer_no; ?></td>
-                            <td class="sim"><?php echo strtoupper($trans_item->global_name); ?></td>
-                            <td class="amount"><?php echo $trans_item->amount; ?></td>
-                            <td class="confirmationno"><?php echo $trans_item->confirm_no; ?></td>
-                            <td class="transactiondate"><?php echo $trans_item->date_created; ?></td>
-                            
-                            
-                        </tr>
-                     <?php endforeach; ?>  
-
-                    </tbody>                    
+                  <table id="datatable-buttons" class="table table-striped table-bordered table-hover">
+                
 
                   </table>
                 </div>
-                </div>       
+                </div>
+              </div>  
+
       <div id="modal1" class="modal fade" role="dialog">
         <div class="modal-dialog modal-lg">
 
@@ -100,7 +134,7 @@
           </div>
 
         </div>
-      </div>      
+      </div>             
         <script src="<?php echo base_url(); ?>js/datatables/jquery.dataTables.min.js"></script>
         <script src="<?php echo base_url(); ?>js/datatables/dataTables.bootstrap.js"></script>
         <script src="<?php echo base_url(); ?>js/datatables/dataTables.buttons.min.js"></script>
@@ -116,52 +150,159 @@
         <script src="<?php echo base_url(); ?>js/datatables/responsive.bootstrap.min.js"></script>
         <script src="<?php echo base_url(); ?>js/datatables/dataTables.scroller.min.js"></script>
         <script>
-          var handleDataTableButtons = function() {
-              "use strict";
-              0 !== $("#datatable-buttons").length && $("#datatable-buttons").DataTable({
-                dom: "Bfrtip",
-                buttons: [{
-                  extend: "copy",
-                  className: "btn-sm"
-                }, {
-                  extend: "csv",
-                  className: "btn-sm"
-                }, {
-                  extend: "excel",
-                  className: "btn-sm"
-                }, {
-                  extend: "pdf",
-                  className: "btn-sm"
-                }, {
-                  extend: "print",
-                  className: "btn-sm"
-                }],
-                responsive: !0
-              })
-            },
-            TableManageButtons = function() {
-              "use strict";
-              return {
-                init: function() {
-                  handleDataTableButtons()
-                }
-              }
-            }();
+
         </script>
 
         <script type="text/javascript">
+          var path = "<?php echo site_url(); ?>";
+          var app = "TransactionController";
           $(document).ready(function() {
-            $('#datatable-buttons').dataTable();
-          });
-          TableManageButtons.init();
-        </script>
-        <script type="text/javascript" src="<?php echo base_url(); ?>js/moment/moment.min.js"></script>
-       <script type="text/javascript" src="<?php echo base_url(); ?>js/datepicker/daterangepicker.js"></script>
-       <script type="text/javascript" src="<?php echo base_url(); ?>js/autocomplete/jquery.autocomplete.js"></script>
+            $('#datatable-buttons').dataTable({
+                  dom: "Bfrtip",
+                  buttons: [{
+                    extend: "copy",
+                    className: "btn-sm"
+                  }, {
+                    extend: "csv",
+                    className: "btn-sm"
+                  }, {
+                    extend: "excel",
+                    className: "btn-sm"
+                  }, {
+                    extend: "pdf",
+                    className: "btn-sm"
+                  }, {
+                    extend: "print",
+                    className: "btn-sm"
+                  }],
+                "createdRow": function( row, data, dataIndex ) {
+                    if(row.transaction_id != "none"){
+                      $(row).addClass( 'modal-trigger' );
+                      $(row).attr('data-toggle', 'modal');
+                      $(row).attr('data-target', '#modal1');
+                      $(row).attr('data-id', data['transaction_id']);
+                      $(row).attr('id', data['transaction_id']);
+                      $('<input type="hidden" class="dsp_id" value="'+data['dsp_id']+'">').appendTo(row);
+                    }
+                  },
+                  responsive: !0,
+                  'columnDefs': [
+                  {
+                      'targets': 0,
+                      'title': "DSP Name",
+                      'class': "dsp_name",
+                      'data': 'name'
+                  },                 
+                  {
+                      'targets': 1,
+                      'title': 'Dealer No.',
+                      'class': 'dealerno',
+                      'data': 'dealer_no'
+                  },
+                  {
+                      'targets': 2,
+                      'title': 'Network',
+                      'class': 'sim',
+                      'data': 'global_name'
+                  },  
+                  {
+                      'targets': 3,
+                      'title': 'Confirmation No',
+                      'class': 'confirmationno',
+                      'data': 'confirm_no'
+                  },
+                  {
+                      'targets': 4,
+                      'title': 'Transaction Date',
+                      'class': 'transactiondate',
+                      'data': 'date_created'
+                  },
+                  {
+                      'targets': 5,
+                      'title': 'Amount',
+                      'class': 'amount',
+                      'data': 'amount'
+                  },
+                  {
+                      'targets': 6,
+                      'title': 'Beginning Balance',
+                      'data': 'beg_bal'
+                  },                                                                                        
+                  {
+                      'targets': 7,
+                      'title': 'Running Balance',
+                      'data': 'run_bal'
+                   }],
+                   'order': [[4, 'desc']]              
+            });
 
-          <script>
-              var path = "<?php echo site_url(); ?>";
-              var app = "TransactionController";
+            $(".daterange").daterangepicker({
+                "opens": "left",
+                "linkedCalendars": false,
+                locale: {
+                  format: 'YYYY-MM-DD',
+                },
+              });
+            $('#balchk').change(function(){
+              var table =  $('#datatable-buttons').DataTable();
+              if ($(this).is(':checked')) {
+                  $("#pochk").removeAttr("disabled");
+               }else{
+                  $("#pochk").attr("disabled", true);
+               }
+            });
+            $('#balchk').trigger('change');
+            $('#searchbtn').click(function(){
+
+              var str = $(".daterange").val();
+              var date = str.split(" ");
+              var date1 = date[0];
+              var date2 = date[2];
+              var network = $("input[type='radio'][name='network']:checked").val();
+              var po;
+              var balchk;
+              if($("#pochk:checked").length > 0){
+                po = 1;
+              }else{
+                po = 0;
+              }
+              if($("#balchk:checked").length > 0){
+                balchk = 1;
+              }else{
+                balchk = 0;
+
+              }              
+                $.ajax({
+                  method: 'POST',
+                    url: path + "/" + app + "/getTransaction",
+                    cache: false,
+                    data: {date1: date1, date2: date2, network:network, po:po, balchk:balchk},
+                    async:false,
+                    success: function (data){                     
+                      
+                      if(data.status == "failed"){
+                        alert("Error has occurred.");
+                      }else if(data.status == 'success'){
+                        $('#datatable-buttons').dataTable().fnClearTable();
+                        if(data.recordsTotal > 0){
+                          var jsdata = JSON.parse(JSON.stringify(data.data));
+                          $('#datatable-buttons').dataTable().fnAddData(jsdata);
+                        }
+                      }
+                      
+                    },
+                    error: function (data){
+                      alert("Error has occurred.");
+                    } 
+                });              
+            });
+
+          });
+          
+        </script>
+        <script>
+                  var path = "<?php echo site_url(); ?>";
+          var app = "TransactionController";
               var names = [];
               <?php foreach ($dsp as $dsp_item): ?>
                 var data = [];
@@ -275,5 +416,7 @@
                 });          
             });
           });
-          </script> 
-  
+        </script>
+        <script type="text/javascript" src="<?php echo base_url(); ?>js/moment/moment.min.js"></script>
+       <script type="text/javascript" src="<?php echo base_url(); ?>js/datepicker/daterangepicker.js"></script>
+       <script type="text/javascript" src="<?php echo base_url(); ?>js/autocomplete/jquery.autocomplete.js"></script>
