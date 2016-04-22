@@ -1,5 +1,5 @@
 <?php
-Class transaction extends CI_Model
+Class Transaction extends CI_Model
 {
   public function __construct() {
   	
