@@ -7,7 +7,7 @@ class PurchaseOrderController extends CI_Controller {
    parent::__construct();
    $this->load->helper('url');
    $this->load->library('session');
-   $this->load->model('purchaseorder','',TRUE);
+   $this->load->model('PurchaseOrder','',TRUE);
    $this->load->model('globalSim','',TRUE);
    if(!($this->session->userdata('logged_in') == true)){
       $this->load->view('errors/index');
@@ -44,7 +44,7 @@ class PurchaseOrderController extends CI_Controller {
                  'date_created' => $date_created,
                  'user_id' => $user_id,                       
                  );
-     $ret = $this->purchaseorder->addPurchaseOrder($data);
+     $ret = $this->PurchaseOrder->addPurchaseOrder($data);
      if($ret === false){
         $this->session->set_flashdata('message', 'Database Error.');  
      }else{
@@ -79,7 +79,7 @@ function check_sim($sim){
                  'amount' => $amount,
                  'date_created' => $purchaseorderdate,
             );
-   $ret = $this->purchaseorder->editPurchaseOrder($data,$purchase_id);
+   $ret = $this->PurchaseOrder->editPurchaseOrder($data,$purchase_id);
    if($ret === false){
       header('Content-type: application/json');
       $response_array['status'] = 'failed';    
@@ -94,7 +94,7 @@ function check_sim($sim){
 
  function deletePurchaseOrder(){
    $purchase_id = $this->input->post('purchase_id');
-   $ret = $this->purchaseorder->deletePurchaseOrder($purchase_id);
+   $ret = $this->PurchaseOrder->deletePurchaseOrder($purchase_id);
      if($ret === false){
         header('Content-type: application/json');
         $response_array['status'] = 'failed';    
