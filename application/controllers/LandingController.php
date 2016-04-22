@@ -11,7 +11,7 @@ class LandingController extends CI_Controller {
    $this->load->model('dss','',TRUE);
    $this->load->model('globalSim','',TRUE);
    $this->load->model('transaction','',TRUE);
-   $this->load->model('purchaseorder','',TRUE);
+   $this->load->model('PurchaseOrder','',TRUE);
    if(!($this->session->userdata('logged_in') == true)){
       $this->load->view('errors/index');
    }
@@ -149,7 +149,7 @@ class LandingController extends CI_Controller {
  }
 
   function viewPurchaseOrder(){
-   $GLOBALS['data']['po'] = $this->purchaseorder->getAllPurchaseOrder();
+   $GLOBALS['data']['po'] = $this->PurchaseOrder->getAllPurchaseOrder();
    $GLOBALS['data']['sim'] = $this->globalSim->getAllSim();
    $this->load->view('templates/header', $GLOBALS['data']);
    $this->load->view('viewpurchaseorder', $GLOBALS['data']);

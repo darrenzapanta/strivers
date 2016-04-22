@@ -122,3 +122,14 @@ INSERT INTO `strivers`.`global_balance` (`network`, `current_balance`, `global_n
 INSERT INTO `strivers`.`user` (`username`, `password`, `type`,`firstname`, `lastname`) VALUES ('admin', '21232f297a57a5a743894a0e4a801fc3', 'Mikko','Basilio','admin');
 UPDATE `strivers`.`dss` SET `dss_id`='0' WHERE `dss_id`='1';
 
+INSERT INTO `strivers`.`dss` (`dss_firstname`, `dss_lastname`, `dss_birthday`, `dss_gender`) VALUES ('Charles', 'Smith', '1989-02-01', 'Male');
+INSERT INTO `strivers`.`dss` (`dss_firstname`, `dss_lastname`, `dss_birthday`, `dss_gender`) VALUES ('Patrick', 'Rivero', '1989-02-03', 'Male');
+INSERT INTO `strivers`.`dss` (`dss_firstname`, `dss_lastname`, `dss_birthday`, `dss_gender`) VALUES ('Charles', 'Fagan', '1980-02-01', 'Male');
+INSERT INTO `strivers`.`dss` (`dss_firstname`, `dss_lastname`, `dss_birthday`, `dss_gender`) VALUES ('Stevie', 'Cruz', '1999-05-02', 'Male');
+INSERT INTO `strivers`.`dss` (`dss_firstname`, `dss_lastname`, `dss_birthday`, `dss_gender`) VALUES ('Michael', 'Alverson', '1950-02-01', 'Male');
+INSERT INTO `strivers`.`dss` (`dss_firstname`, `dss_lastname`, `dss_birthday`, `dss_gender`) VALUES ('Nicholas', 'Simmons', '1989-10-11', 'Male');
+INSERT INTO `strivers`.`dss` (`dss_firstname`, `dss_lastname`, `dss_birthday`, `dss_gender`) VALUES ('Robert', 'Shields', '1975-12-12', 'Male');
+INSERT INTO `strivers`.`dss` (`dss_firstname`, `dss_lastname`, `dss_birthday`, `dss_gender`) VALUES ('Bryan', 'Brown', '1979-03-01', 'Male');
+INSERT INTO `strivers`.`dss` (`dss_firstname`, `dss_lastname`, `dss_birthday`, `dss_gender`) VALUES ('Jesse', 'Rushing', '1979-11-11', 'Male');
+INSERT INTO `strivers`.`dss` (`dss_firstname`, `dss_lastname`, `dss_birthday`, `dss_gender`) VALUES ('Benjamin', 'Davis', '1989-02-01', 'Male');
+
