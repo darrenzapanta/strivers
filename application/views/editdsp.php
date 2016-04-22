@@ -46,7 +46,7 @@
                             <td class="dsp_lastname"><?php echo $dsp_item->dsp_lastname; ?></td>
                             <td class="network"><?php echo strtoupper($dsp_item->dsp_network); ?></td>
                             <td class="dealerno"><?php echo $dsp_item->dsp_dealer_no; ?></td>
-                            <input class="dss_id" type="hidden" val="<?php echo $dsp_item->dss_id; ?>">
+                            <input class="dss_id" type="hidden" value="<?php echo $dsp_item->dss_id; ?>">
                             <td class="dss"><?php echo $dsp_item->dss_firstname." ".$dsp_item->dss_lastname; ?></td>
                             <td class="balance"><?php echo $dsp_item->dsp_balance; ?></td>
                             <td class="percentage"><?php echo $dsp_item->dsp_percentage; ?></td>
@@ -233,6 +233,7 @@
                 var dss_id = $("#"+ dataid + " .dss_id").val();
                 var gender = $("#"+ dataid + " .gender").html();
                 var network = $("#"+ dataid + " .network").html();
+                console.log(dss_id);
                 $('#modalid').val(dataid);
                 $('#newfirstname').val($("#"+ dataid + " .dsp_firstname").html());
                 $('#newlastname').val($("#"+ dataid + " .dsp_lastname").html());
