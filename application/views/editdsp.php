@@ -46,7 +46,7 @@
                             <td class="dsp_lastname"><?php echo $dsp_item->dsp_lastname; ?></td>
                             <td class="network"><?php echo strtoupper($dsp_item->dsp_network); ?></td>
                             <td class="dealerno"><?php echo $dsp_item->dsp_dealer_no; ?></td>
-                            <td class="dss"><?php echo $dsp_item->dss_firstname." ".$dsp_item->dss_lastname; ?></td>
+                            <td class="dss" id="<?php echo $dsp_item->dss_id; ?>"><?php echo $dsp_item->dss_firstname." ".$dsp_item->dss_lastname; ?></td>
                             <td class="balance"><?php echo $dsp_item->dsp_balance; ?></td>
                             <td class="percentage"><?php echo $dsp_item->dsp_percentage; ?></td>
                             <td class="email"><?php echo $dsp_item->dsp_email; ?></td>
