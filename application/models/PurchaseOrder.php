@@ -1,5 +1,5 @@
 <?php
-Class PurchaseOrder extends CI_Model
+Class Purchaseorder extends CI_Model
 {
   public function __construct() {
   	
