@@ -4,7 +4,7 @@ Class transaction extends CI_Model
   public function __construct() {
   	
     parent::__construct();
-    $this->load->model('globalSim','',TRUE);
+    $this->load->model('globalsim','',TRUE);
   }
 
   function addTransaction($data){
@@ -15,7 +15,7 @@ Class transaction extends CI_Model
 			'amount' => $data['amount']
 			);
 		$global_name = $data['global_name'];
-		$ret = $this->globalSim->updateBalance($data2, $global_name, "sub");
+		$ret = $this->globalsim->updateBalance($data2, $global_name, "sub");
     if($ret == false){
       $this->db->trans_rollback();
     }
@@ -115,7 +115,7 @@ Class transaction extends CI_Model
     $j = $query->num_rows();
     $k = $query2->num_rows();
     $count = $j+$k;
-    $current_balance = $this->globalSim->getCurrentBalance($global_name);
+    $current_balance = $this->globalsim->getCurrentBalance($global_name);
     $trans = $query->first_row('array');
     $po = $query2->first_row('array');
     $result = array();
@@ -183,18 +183,18 @@ Class transaction extends CI_Model
     foreach($query->result() as $row){
       if(floatval($row->amount) != floatval($data['amount']) || $row->global_name != $data['global_name']){
           if($data['global_name'] == $row->global_name){
-            $beg_balance = $this->globalSim->getCurrentBalance($data['global_name']);
+            $beg_balance = $this->globalsim->getCurrentBalance($data['global_name']);
             $current_balance = (floatval($beg_balance) + floatval($row->amount)) - floatval($data['amount']);
             $data2 = array('current_balance' => $current_balance);
             $this->db->where('global_name', $data['global_name']);
             $this->db->update('global_balance', $data2);         
           }else if($data['global_name'] != $row->global_name){
-            $beg_balance = $this->globalSim->getCurrentBalance($row->global_name);
+            $beg_balance = $this->globalsim->getCurrentBalance($row->global_name);
             $current_balance = floatval($beg_balance) + floatval($row->amount);
             $data2 = array('current_balance' => $current_balance);
             $this->db->where('global_name', $row->global_name);
             $this->db->update('global_balance', $data2); 
-            $beg_balance = $this->globalSim->getCurrentBalance($data['global_name']);
+            $beg_balance = $this->globalsim->getCurrentBalance($data['global_name']);
             $current_balance = floatval($beg_balance) - floatval($data['amount']);
             $data2 = array('current_balance' => $current_balance);
             $this->db->where('global_name', $data['global_name']);

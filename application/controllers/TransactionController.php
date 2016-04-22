@@ -10,7 +10,7 @@ class TransactionController extends CI_Controller {
    $this->load->model('dsp','',TRUE);
    $this->load->model('dss','',TRUE);
    $this->load->model('transaction','',TRUE);
-   $this->load->model('globalSim','',TRUE);
+   $this->load->model('globalsim','',TRUE);
    if(!($this->session->userdata('logged_in') == true)){
       $this->load->view('errors/index');
    }
@@ -32,7 +32,7 @@ class TransactionController extends CI_Controller {
    if($this->form_validation->run() == FALSE)
    {
      $GLOBALS['data']['page'] = "addtransaction";
-     $GLOBALS['data']['sim'] = $this->globalSim->getAllSim();
+     $GLOBALS['data']['sim'] = $this->globalsim->getAllSim();
      $GLOBALS['data']['dsp'] = $this->dsp->getAllDSP();
      $this->load->view('templates/header', $GLOBALS['data']);
      $this->load->view('addTransaction', $GLOBALS['data']);
@@ -69,7 +69,7 @@ class TransactionController extends CI_Controller {
 }
 
 function check_sim($sim){
-  $result = $this->globalSim->getAllSim();
+  $result = $this->globalsim->getAllSim();
   foreach($result as $row){
     if($sim == $row->global_name)
       return true;

@@ -7,8 +7,8 @@ class PurchaseOrderController extends CI_Controller {
    parent::__construct();
    $this->load->helper('url');
    $this->load->library('session');
-   $this->load->model('Purchaseorder','',TRUE);
-   $this->load->model('globalSim','',TRUE);
+   $this->load->model('purchaseorder','',TRUE);
+   $this->load->model('globalsim','',TRUE);
    if(!($this->session->userdata('logged_in') == true)){
       $this->load->view('errors/index');
    }
@@ -26,7 +26,7 @@ class PurchaseOrderController extends CI_Controller {
    
    if($this->form_validation->run() == FALSE)
    {
-     $GLOBALS['data']['sim'] = $this->globalSim->getAllSim();
+     $GLOBALS['data']['sim'] = $this->globalsim->getAllSim();
      $this->load->view('templates/header', $GLOBALS['data']);
      $this->load->view('addPurchaseOrder', $GLOBALS['data']);
      $this->load->view('templates/footer');
@@ -44,7 +44,7 @@ class PurchaseOrderController extends CI_Controller {
                  'date_created' => $date_created,
                  'user_id' => $user_id,                       
                  );
-     $ret = $this->Purchaseorder->addPurchaseOrder($data);
+     $ret = $this->purchaseorder->addPurchaseOrder($data);
      if($ret === false){
         $this->session->set_flashdata('message', 'Database Error.');  
      }else{
@@ -57,7 +57,7 @@ class PurchaseOrderController extends CI_Controller {
 }
 
 function check_sim($sim){
-  $result = $this->globalSim->getAllSim();
+  $result = $this->globalsim->getAllSim();
   foreach($result as $row){
     if($sim == $row->global_name)
       return true;
@@ -79,7 +79,7 @@ function check_sim($sim){
                  'amount' => $amount,
                  'date_created' => $purchaseorderdate,
             );
-   $ret = $this->Purchaseorder->editPurchaseOrder($data,$purchase_id);
+   $ret = $this->purchaseorder->editPurchaseOrder($data,$purchase_id);
    if($ret === false){
       header('Content-type: application/json');
       $response_array['status'] = 'failed';    
@@ -94,7 +94,7 @@ function check_sim($sim){
 
  function deletePurchaseOrder(){
    $purchase_id = $this->input->post('purchase_id');
-   $ret = $this->Purchaseorder->deletePurchaseOrder($purchase_id);
+   $ret = $this->purchaseorder->deletePurchaseOrder($purchase_id);
      if($ret === false){
         header('Content-type: application/json');
         $response_array['status'] = 'failed';    

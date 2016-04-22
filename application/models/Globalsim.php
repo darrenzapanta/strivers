@@ -1,5 +1,5 @@
 <?php
-Class globalSim extends CI_Model
+Class globalsim extends CI_Model
 {
   public function __construct() {
     parent::__construct();
