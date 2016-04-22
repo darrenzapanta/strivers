@@ -1,5 +1,5 @@
 <?php
-Class dss extends CI_Model
+Class Dss extends CI_Model
 {
   public function __construct() {
     parent::__construct();
