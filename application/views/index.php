@@ -69,7 +69,7 @@
                           </a>
                           <div class="media-body">
                             <a class="title" href="#"><?php echo $data_item->dsp_firstname." ".$data_item->dsp_lastname ?></a>
-                            <p><strong>₱<?php echo $data_item->amount ?> </strong> Total Transaction Amount Last Week.</p>
+                            <p><strong>₱<?php echo $data_item->amount ?> </strong> Total Transaction Amount.</p>
                           </div>
                         </li>
                         <?php endforeach ?>
