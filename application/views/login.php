@@ -1,10 +1,19 @@
+    <br>
+    <br>
+    <br>
 
-
+    <div class="row">
+        <center>
+      <img height="200" width="250" src="<?php echo base_url(); ?>images/strivers.png">
+        </center>
+      </div>
   <div class="">
+
     <a class="hiddenanchor" id="toregister"></a>
     <a class="hiddenanchor" id="tologin"></a>
 
-    <div id="wrapper">
+    <div id="wrapper" style="margin-top:0%">
+
       <div id="login" class="animate form">
       <?php if($this->session->flashdata('message') !== null): ?>
         <div class="row">
@@ -75,6 +84,7 @@
         </section>
         <!-- content -->
       </div>
+
     </div>
   </div>
 
