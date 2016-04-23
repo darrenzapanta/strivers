@@ -176,7 +176,7 @@
                     className: "btn-sm"
                   }],
                 "createdRow": function( row, data, dataIndex ) {
-                    if(row.transaction_id != "none"){
+                    if(data['transaction_id'] != "none"){
                       $(row).addClass( 'modal-trigger' );
                       $(row).attr('data-toggle', 'modal');
                       $(row).attr('data-target', '#modal1');
