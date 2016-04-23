@@ -1578,7 +1578,7 @@ ul.top_profiles {
 }
 ul.top_profiles li {
   margin: 0;
-  padding: 3px 5px;
+  padding: 0px 0px;
 }
 ul.top_profiles li:nth-child(odd) {
   background-color: #eee;
