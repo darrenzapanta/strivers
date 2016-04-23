@@ -21,7 +21,7 @@
                   <h2>Purhcase Order Details</h2>
                   <div class="clearfix"></div>
                 </div>
-                  <table data-order='[[ 2, "desc" ]]' id="datatable-buttons" class="table table-striped table-bordered table-hover">
+                  <table data-order='[[ 2, "desc" ]]' id="datatable-buttons" class="table table-striped table-bordered table-hover responsive nowrap">
                     <thead>
                       <tr>
                         <th>Sim</th>
@@ -100,45 +100,43 @@
         <script src="<?php echo base_url(); ?>js/datatables/dataTables.responsive.min.js"></script>
         <script src="<?php echo base_url(); ?>js/datatables/responsive.bootstrap.min.js"></script>
         <script src="<?php echo base_url(); ?>js/datatables/dataTables.scroller.min.js"></script>
-        <script>
-          var handleDataTableButtons = function() {
-              "use strict";
-              0 !== $("#datatable-buttons").length && $("#datatable-buttons").DataTable({
-                dom: "Bfrtip",
-                buttons: [{
-                  extend: "copy",
-                  className: "btn-sm"
-                }, {
-                  extend: "csv",
-                  className: "btn-sm"
-                }, {
-                  extend: "excel",
-                  className: "btn-sm"
-                }, {
-                  extend: "pdf",
-                  className: "btn-sm"
-                }, {
-                  extend: "print",
-                  className: "btn-sm"
-                }],
-                responsive: !0
-              })
-            },
-            TableManageButtons = function() {
-              "use strict";
-              return {
-                init: function() {
-                  handleDataTableButtons()
-                }
-              }
-            }();
-        </script>
+
 
         <script type="text/javascript">
           $(document).ready(function() {
-            $('#datatable-buttons').dataTable();
+            $('#datatable-buttons').dataTable({
+                  dom: "Bfrtip",
+                  buttons: [{
+                    extend: "copy",
+                    className: "btn-sm"
+                  }, {
+                    extend: "csv",
+                    className: "btn-sm"
+                  }, {
+                    extend: "excel",
+                    className: "btn-sm"
+                  }, {
+                    extend: "pdf",
+                    className: "btn-sm"
+                  }, {
+                    extend: "print",
+                    className: "btn-sm"
+                  }],
+                "createdRow": function( row, data, dataIndex ) {
+                    if(row.transaction_id != "none"){
+                      $(row).addClass( 'modal-trigger' );
+                      $(row).attr('data-toggle', 'modal');
+                      $(row).attr('data-target', '#modal1');
+                      $(row).attr('data-id', data['transaction_id']);
+                      $(row).attr('id', data['transaction_id']);
+                      $('<input type="hidden" class="dsp_id" value="'+data['dsp_id']+'">').appendTo(row);
+                    }
+                  },
+                  responsive: true,
+         
+            });
           });
-          TableManageButtons.init();
+      
         </script>
         <script type="text/javascript" src="<?php echo base_url(); ?>js/moment/moment.min.js"></script>
        <script type="text/javascript" src="<?php echo base_url(); ?>js/datepicker/daterangepicker.js"></script>

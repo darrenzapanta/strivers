@@ -79,7 +79,7 @@
                   <h2>Transaction Details</h2>
                   <div class="clearfix"></div>
                 </div>
-                  <table id="datatable-buttons" class="table table-striped table-bordered table-hover">
+                  <table id="datatable-buttons" class="table table-striped table-bordered table-hover responsive">
                 
 
                   </table>
@@ -185,7 +185,7 @@
                       $('<input type="hidden" class="dsp_id" value="'+data['dsp_id']+'">').appendTo(row);
                     }
                   },
-                  responsive: !0,
+                  responsive: true,
                   'columnDefs': [
                   {
                       'targets': 0,
