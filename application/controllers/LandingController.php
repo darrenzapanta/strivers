@@ -8,10 +8,11 @@ class LandingController extends CI_Controller {
    $this->load->helper('url');
    $this->load->library('session');
    $this->load->model('Dsp','',TRUE);
-   $this->load->model('Dss','',TRUE);
+   $this->load->model('Am','',TRUE);
    $this->load->model('Globalsim','',TRUE);
    $this->load->model('Transaction','',TRUE);
    $this->load->model('Purchaseorder','',TRUE);
+   $this->load->model('Operations','',TRUE);
    if(!($this->session->userdata('logged_in') == true)){
       $this->load->view('errors/index');
    }
@@ -44,23 +45,14 @@ class LandingController extends CI_Controller {
    return $data2;
 
  }
+
  function index(){
    $GLOBALS['data']['sim'] = $this->Globalsim->getAllSim();
    $GLOBALS['data']['transaction'] =$this->Transaction->getTransactionCount();
    $date1 = date('Y-m-d', strtotime('-1 week'));
    $date2 = date('Y-m-d');
-   $sim = $this->Globalsim->getAllSim();
-   $data2 = array();
    $topDSP = array();
-   foreach($sim as $sim_item){
-      $temp = array();
-      $result = $this->Transaction->getTransactionForGraph($date1, $date2, $sim_item->global_name);
-      $temp['global_name'] = $sim_item->global_name;
-      $temp['data'] = $this->Transaction->getTopDSP($date1, $date2, $sim_item->global_name);
-      $topDSP[] = $temp;
-      array_push($data2, array($sim_item->global_name,$this->graphWeekly($result)));
-   }
-   $GLOBALS['data']['graph'] = json_encode($data2);
+
    $GLOBALS['data']['topDSP'] = $topDSP;
    $GLOBALS['data']['totalsales'] = "";
    $GLOBALS['data']['purchaseorder'] = "";
@@ -72,24 +64,25 @@ class LandingController extends CI_Controller {
  function addDSP()
  {
    $this->load->helper(array('form'));
-   $GLOBALS['data']['page'] = "adddsp";
-   $GLOBALS['data']['dss'] = $this->Dss->getAllDSS();
+   $GLOBALS['data']['am'] = $this->Am->getAllAM();
+   $GLOBALS['data']['sim'] = $this->Globalsim->getAllSim();
    $this->load->view('templates/header', $GLOBALS['data']);
    $this->load->view('adddsp', $GLOBALS['data']);
    $this->load->view('templates/footer');
  }
- function addDSS(){
+ function addAM(){
    $this->load->helper(array('form'));
    $this->load->view('templates/header', $GLOBALS['data']);
-   $this->load->view('adddss', $GLOBALS['data']);
+   $this->load->view('addam', $GLOBALS['data']);
    $this->load->view('templates/footer');
  }
 
-  function viewDSS(){
+  function viewAM(){
 
-   $GLOBALS['data']['dss'] = $this->Dss->getAllDSS();
+   $GLOBALS['data']['am'] = $this->Am->getAllAM();
+   $this->load->helper(array('form'));
    $this->load->view('templates/header', $GLOBALS['data']);
-   $this->load->view('viewdss', $GLOBALS['data']);
+   $this->load->view('viewam', $GLOBALS['data']);
    $this->load->view('templates/footer');
  }
 
@@ -97,7 +90,9 @@ class LandingController extends CI_Controller {
  {
 
    $GLOBALS['data']['dsp'] = $this->Dsp->getAllDSP();
-   $GLOBALS['data']['dss'] = $this->Dss->getAllDSS();
+   $GLOBALS['data']['am'] = $this->Am->getAllAM();
+   $this->load->helper(array('form'));
+   $GLOBALS['data']['sim'] = $this->Globalsim->getAllSim();
    $this->load->view('templates/header', $GLOBALS['data']);
    $this->load->view('editdsp', $GLOBALS['data']);
    $this->load->view('templates/footer');
@@ -110,6 +105,10 @@ class LandingController extends CI_Controller {
    $GLOBALS['data']['page'] = "addtransaction";
    $GLOBALS['data']['sim'] = $this->Globalsim->getAllSim();
    $GLOBALS['data']['dsp'] = $this->Dsp->getAllDSP();
+
+   $code = $this->Operations->generateCode("load_transaction");
+   $this->session->set_userdata('transaction_code', $code);
+   $GLOBALS['data']['code'] = $code;
    $this->load->view('templates/header', $GLOBALS['data']);
    $this->load->view('addtransaction', $GLOBALS['data']);
    $this->load->view('templates/footer');
@@ -117,19 +116,52 @@ class LandingController extends CI_Controller {
 
   function viewTransaction(){
    $GLOBALS['data']['sim'] = $this->Globalsim->getAllSim();
-   $GLOBALS['data']['dsp'] = $this->Dsp->getAllDSP();
    $this->load->view('templates/header', $GLOBALS['data']);
    $this->load->view('detailedtransaction', $GLOBALS['data']);
+   $this->load->view('templates/footer');
+ }
+
+   function viewTransactionUN(){
+   $GLOBALS['data']['sim'] = $this->Globalsim->getAllSim();
+   $this->load->view('templates/header', $GLOBALS['data']);
+   $this->load->view('viewtransactionun', $GLOBALS['data']);
+   $this->load->view('templates/footer');
+ }
+
+    function viewTransactionAM(){
+   $GLOBALS['data']['sim'] = $this->Globalsim->getAllSim();
+   $this->load->view('templates/header', $GLOBALS['data']);
+   $this->load->view('viewtransactionam', $GLOBALS['data']);
    $this->load->view('templates/footer');
  }
    function detailedTransaction(){
    $GLOBALS['data']['trans'] = array();
+   $this->load->helper(array('form'));
    $GLOBALS['data']['sim'] = $this->Globalsim->getAllSim();
-   $GLOBALS['data']['dsp'] = $this->Dsp->getAllDSP();
    $this->load->view('templates/header', $GLOBALS['data']);
    $this->load->view('detailedtransaction', $GLOBALS['data']);
    $this->load->view('templates/footer');
  }
+
+   function addPaymentAM(){
+   $this->load->helper(array('form'));
+   $GLOBALS['data']['am'] = $this->Am->getAllAM();
+   $GLOBALS['data']['sim'] = $this->Globalsim->getAllSim();
+   
+   $this->load->view('templates/header', $GLOBALS['data']);
+   $this->load->view('addpaymentam', $GLOBALS['data']);
+   $this->load->view('templates/footer');
+}
+
+   function addPaymentUN(){
+   $this->load->helper(array('form'));
+   $GLOBALS['data']['am'] = $this->Am->getAllAM();
+   $GLOBALS['data']['dsp'] = $this->Dsp->getAllDSP();
+   
+   $this->load->view('templates/header', $GLOBALS['data']);
+   $this->load->view('addpaymentun', $GLOBALS['data']);
+   $this->load->view('templates/footer');
+}
 
 
 
@@ -156,6 +188,71 @@ class LandingController extends CI_Controller {
    $this->load->view('templates/footer');
  }
 
+ function addInventoryItem(){
+
+   $this->load->helper(array('form'));
+   $this->load->view('templates/header', $GLOBALS['data']);
+   $this->load->view('addinventoryitem', $GLOBALS['data']);
+   $this->load->view('templates/footer');
+ }
+
+  function addInventoryPurchase(){
+   $this->load->model('Inventory','',TRUE);
+   $this->load->helper(array('form'));
+
+   $GLOBALS['data']['item'] = $this->Inventory->getAllItems();
+   $code = $this->Operations->generateCode("inventory_purchase");
+   $this->session->set_userdata('purchase_code', $code);
+    $GLOBALS['data']['code'] = $code;
+   $this->load->view('templates/header', $GLOBALS['data']);
+   $this->load->view('addinventorypurchase', $GLOBALS['data']);
+   $this->load->view('templates/footer');
+ }
+
+  function addInventorySales(){
+   
+   $this->load->model('Inventory','',TRUE);
+   $this->load->helper(array('form'));
+   $code = $this->Operations->generateCode("inventory_sales");
+   $this->session->set_userdata('sales_code', $code);
+   $GLOBALS['data']['code'] = $code;
+   $GLOBALS['data']['item'] = $this->Inventory->getAllItems();
+   $this->load->view('templates/header', $GLOBALS['data']);
+   $this->load->view('addinventorysales', $GLOBALS['data']);
+   $this->load->view('templates/footer');
+ }
+
+ function addSalesPayment(){
+   $this->load->view('templates/header', $GLOBALS['data']);
+   $this->load->view('addsalespayment');
+   $this->load->view('templates/footer');  
+ }
+
+ function viewInventoryItems(){
+   $this->load->model('Inventory','',TRUE);
+   $GLOBALS['data']['item'] = $this->Inventory->getAllItems();
+   $this->load->view('templates/header', $GLOBALS['data']);
+   $this->load->view('viewinventoryitems', $GLOBALS['data']);
+   $this->load->view('templates/footer');  
+ }
+
+ function viewInventoryReport(){
+   $this->load->view('templates/header', $GLOBALS['data']);
+   $this->load->view('viewinventoryreport', $GLOBALS['data']);
+   $this->load->view('templates/footer'); 
+ }
+
+ function viewSalesTransactions(){
+   $this->load->view('templates/header', $GLOBALS['data']);
+   $this->load->view('viewsalestransactions', $GLOBALS['data']);
+   $this->load->view('templates/footer');    
+ }
+
+ function viewPurchaseTransactions(){
+   $this->load->view('templates/header', $GLOBALS['data']);
+   $this->load->view('viewpurchasetransactions', $GLOBALS['data']);
+   $this->load->view('templates/footer');    
+ }
 
 
 }

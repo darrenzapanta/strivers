@@ -69,22 +69,27 @@
                       </div>
                     </div>                    
                     <div class="form-group">
-                      <label class="control-label col-md-3 col-sm-3 col-xs-12">Assign DSS</label>
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12">Assign Area Manager:</label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
-				    		<select name="dss" id="dss" class="form-control">
-									<?php foreach ($dss as $dss_item): ?>
-				        				<option value="<?php echo $dss_item->dss_id; ?>"><?=$dss_item->dss_firstname." ".$dss_item->dss_lastname?></option>
+				    		<select name="am" id="am" class="form-control">
+									<?php foreach ($am as $am_item): ?>
+                    <?php if ($am_item->am_code == "Unassigned") : ?>
+                      <option value="<?php echo $am_item->am_code; ?>"><?=$am_item->am_code ?></option>
+                    <?php else : ?>
+                      <option value="<?php echo $am_item->am_code; ?>"><?=$am_item->am_code?></option>
+                    <?php endif; ?>		
 									<?php endforeach; ?>
 				    		</select>
                       </div>
                     </div>
                     <div class="form-group col-md-6 col-sm-6 col-xs-12 pull-left">
-                      <label class="control-label col-md-6 col-sm-6 col-xs-12">Network:</label>
+                      <label class="control-label col-md-6 col-sm-6 col-xs-12">Sim:</label>
                       <div class="col-md-4 col-sm-6 col-xs-12">
-			        	<select name="network" id="network" class="form-control">
-			        		<option value="sun">SUN</option>
-			        		<option value="smart" >SMART</option>
-			        	</select>
+                        <select name="sim" id="sim" class="form-control">
+                          <?php foreach ($sim as $sim_item): ?>
+                                <option value="<?php echo $sim_item->global_name; ?>"><?=$sim_item->global_name?></option>
+                          <?php endforeach; ?>
+                        </select>
                       </div>
                     </div>
                     <div class="form-group col-md-4 col-sm-6 col-xs-12">
@@ -97,13 +102,13 @@
                     <div class="form-group col-md-6 col-sm-6 col-xs-12 pull-left">
                       <label class="control-label col-md-6 col-sm-6 col-xs-12">Balance:</label>
                       <div class="col-md-4 col-sm-6 col-xs-12">
-                      <input name="balance" id="balance" type="text" class="form-control" value="0">
+                      <input name="balance" id="balance" type="number" class="form-control" value="0">
                       </div>
                     </div>
                     <div class="form-group col-md-4 col-sm-6 col-xs-12">
                       <label class="control-label col-md-4 col-sm-6 col-xs-12">Percentage:</label>
                       <div class="col-md-5 col-sm-5 col-xs-12">
-                        <input name="percentage" id="percentage" type="number" min="0" max="100" class="form-control" value="0" step="0.01" min="0">
+                        <input name="percentage" id="percentage" type="number" step="any" min="0" max="100" class="form-control" value="0" step="0.01" min="0">
                         
                       </div>
                     </div>               

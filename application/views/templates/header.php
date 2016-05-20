@@ -92,11 +92,11 @@
                     </li>
                 </li>
               </ul>
-                <li><a><i class="fa fa-edit"></i> Manage DSS <span class="fa fa-chevron-down"></span></a>
+                <li><a><i class="fa fa-edit"></i> Manage Area Manager <span class="fa fa-chevron-down"></span></a>
                   <ul class="nav child_menu" style="display: none">
-                    <li><a href="<?php echo site_url(); ?>LandingController/addDSS">Add DSS</a>
+                    <li><a href="<?php echo site_url(); ?>LandingController/addAM">Add Area Manager</a>
                     </li>
-                    <li><a href="<?php echo site_url(); ?>LandingController/viewDSS">Edit/Delete DSS</a>
+                    <li><a href="<?php echo site_url(); ?>LandingController/viewAM">Edit/Delete Area Manager</a>
                     </li>
                   </ul>
                 </li>
@@ -110,9 +110,17 @@
                 </li>
                 <li><a><i class="fa fa-table"></i> Manage Transactions <span class="fa fa-chevron-down"></span></a>
                   <ul class="nav child_menu" style="display: none">
-                    <li><a href="<?php echo site_url(); ?>LandingController/addTransaction">Add Transaction</a>
+                    <li><a href="<?php echo site_url(); ?>LandingController/addPaymentAM">Add Payment (AM)</a>
                     </li>
-                    <li><a href="<?php echo site_url(); ?>LandingController/viewTransaction">View/Edit Transactions</a>
+                    <li><a href="<?php echo site_url(); ?>LandingController/addPaymentUN">Add Payment (UN)</a>
+                    </li>
+                    <li><a href="<?php echo site_url(); ?>LandingController/addTransaction">Add Load Transaction</a>
+                    </li>
+                    <li><a href="<?php echo site_url(); ?>LandingController/viewTransactionAM">View/Delete Payment (AM)</a>
+                    </li>
+                    <li><a href="<?php echo site_url(); ?>LandingController/viewTransactionUN">View/Delete Payment (UN)</a>
+                    </li>
+                    <li><a href="<?php echo site_url(); ?>LandingController/viewTransaction">View/Delete Transactions</a>
                     </li>
 
                   </ul>
@@ -121,16 +129,38 @@
                   <ul class="nav child_menu" style="display: none">
                     <li><a href="<?php echo site_url(); ?>LandingController/addPurchaseOrder">Add Purchase Order</a>
                     </li>
-                    <li><a href="<?php echo site_url(); ?>LandingController/viewPurchaseOrder">View/Edit Purchase Order</a>
+                    <li><a href="<?php echo site_url(); ?>LandingController/viewPurchaseOrder">View/Delete Purchase Order</a>
                     </li>
                   </ul>
                 </li>
+                <li><a><i class="fa fa-list"></i> Inventory <span class="fa fa-chevron-down"></span></a>
+                  <ul class="nav child_menu" style="display: none">
+                    <li><a href="<?php echo site_url(); ?>LandingController/addInventoryItem">Add Item</a>
+                    </li>
+                    <li><a href="<?php echo site_url(); ?>LandingController/viewInventoryItems">View Items</a>
+                    </li>
+                    <li><a href="<?php echo site_url(); ?>LandingController/addInventoryPurchase">Inventory Purchase</a>
+                    </li>
+                    <li><a href="<?php echo site_url(); ?>LandingController/addInventorySales">Inventory Sales</a>
+                    </li>
+                    <li><a href="<?php echo site_url(); ?>LandingController/addSalesPayment">Add Sales Payment</a>
+                    </li>
+                    <li><a href="<?php echo site_url(); ?>LandingController/viewInventoryReport">Generate Inventory Report</a>
+                    </li>
+                    <li><a href="<?php echo site_url(); ?>LandingController/viewSalesTransactions">View Sales Transactions</a>
+                    </li>
+                    <li><a href="<?php echo site_url(); ?>LandingController/viewPurchaseTransactions">View Purchase Transactions</a>
+                    </li>
+                  </ul>
+                </li>
+
                 <li><a><i class="fa fa-unlock-alt"></i> Admin Panel <span class="fa fa-chevron-down"></span></a>
                   <ul class="nav child_menu" style="display: none">
                     <li><a href="<?php echo site_url(); ?>LandingController/addPurchaseOrder">Manage Sim Cards</a>
                     </li>
                   </ul>
                 </li>
+
                 </li>                
               </ul>
             </div>

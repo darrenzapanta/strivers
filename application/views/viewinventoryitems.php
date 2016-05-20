@@ -9,7 +9,7 @@
           <div class="page-title">
             <div class="title_left">
               <h3>
-                    Edit/View DSS
+                    Edit/View Inventory Items
                 </h3>
             </div>
           </div>
@@ -18,32 +18,28 @@
           <div class="col-md-12 col-sm-12 col-xs-12">
               <div class="x_panel">
                 <div class="x_title">
-                  <h2>DSS Information</h2>
+                  <h2>Item Information</h2>
                   <div class="clearfix"></div>
                 </div>
                   <table id="datatable-buttons" class="table table-striped table-bordered table-hover">
                     <thead>
                       <tr>
-                        <th>First Name</th>
-                        <th>Last Name</th>
-                        <th>Gender</th>
-                        <th>Contact No.</th>
-                        <th>E-mail</th>
-                        <th>Birthdate</th>
+                        <th>Item Code</th>
+                        <th>Item Description</th>
+                        <th>Item Category</th>
+                        <th>Item Cost</th>
+                        <th>Total Stocks</th>
                       </tr>
                     </thead>
-                    <tbody class="dss">
-                     <?php foreach ($dss as $dss_item): ?>
-                      <?php if($dss_item->dss_id <> 0): ?>
-                        <tr class="modal-trigger" data-toggle="modal" data-target="#modal1" data-id="<?php echo $dss_item->dss_id; ?>" id="<?php echo $dss_item->dss_id; ?>">
-                            <td class="dss_firstname"><?php echo $dss_item->dss_firstname; ?></td>
-                            <td class="dss_lastname"><?php echo $dss_item->dss_lastname; ?></td>
-                            <td class="gender"><?php echo $dss_item->dss_gender; ?></td>
-                            <td class="contactno"><?php echo $dss_item->dss_contactno; ?></td>
-                            <td class="email"><?php echo $dss_item->dss_email; ?></td>
-                            <td class="birthday"><?php echo $dss_item->dss_birthday; ?></td>
+                    <tbody class="am">
+                     <?php foreach ($item as $item_item): ?>
+                        <tr class="modal-trigger" data-toggle="modal" data-target="#modal1" data-id="<?php echo $item_item->item_code; ?>" id="<?php echo $item_item->item_code; ?>">
+                            <td class="item_code"><?php echo $item_item->item_code; ?></td>
+                            <td class="item_name"><?php echo $item_item->item_name; ?></td>
+                            <td class="item_category"><?php echo $item_item->item_category; ?></td>
+                            <td class="item_cost"><?php echo $item_item->item_cost; ?></td>
+                            <td class="item_stock"><?php echo $item_item->item_stock; ?></td>
                         </tr>
-                        <?php endif ?>
                      <?php endforeach; ?>  
 
                     </tbody>                    
@@ -59,44 +55,37 @@
           <input type="hidden" id="modalid">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal">&times;</button>
-              <h4 class="modal-title">Edit DSS</h4>
+              <h4 class="modal-title">Edit Item</h4>
             </div>
             <div class="modal-body">
-              <div class="form-group">
-                      <label for="newfirstname">First Name:</label>
-                      <input class="form-control" id="newfirstname" type="text"/>
-              </div>
-              <div class="form-group">
-                      <label for="newlastname">Last Name:</label>
-                      <input class="form-control" id="newlastname" type="text" class="validate">
-              </div>
-              <div class="form-group">
-                <label for="newgender">Gender:</label>
-                    <select name="newgender" id="newgender" class="form-control">
-                      <option value="Male">Male</option>
-                      <option value="Female">Female</option>
-                    </select>
-              </div>
-              <div class="form-group">
-                <label for="newcontactno">Contact No:</label>
-               <input type="text" class="form-control" id="newcontactno" name="newcontactno" data-inputmask="'mask' : '(9999) 999-9999'"/>
-              </div>
-              <div class="form-group">
-                <label>E-mail</label>
-                 <input name="newemail" id="newemail" class="form-control" type="text"/>
+            <div class="row" id="message-info">
 
-              </div>                
+            </div>
               <div class="form-group">
-                <label>Date Of Birth:</label>
-                 <input name="newbirthday" id="newbirthday" class="date-picker form-control col-md-7 col-xs-12" required="required" type="text"/>
-
-              </div>        
-
+                      <label for="newitemcode">Item Code:</label>
+                      <input class="form-control" id="newitemcode" type="text"/>
+              </div>
+              <div class="form-group">
+                      <label for="newitemname">Item Description</label>
+                      <input class="form-control" id="newitemname" type="text" class="validate">
+              </div>
+              <div class="form-group">
+                      <label for="newitemcategory">Item Category</label>
+                      <input class="form-control" id="newitemcategory" type="text" class="validate">
+              </div>
+              <div class="form-group">
+                      <label for="newitemcost">Item Cost</label>
+                      <input type="number" class="form-control" id="newitemcost" type="text" class="validate">
+              </div>
+              <div class="form-group">
+                      <label for="newitemstock">Item Stock</label>
+                      <input type="number" class="form-control" id="newitemstock" type="text" class="validate">
+              </div>
             </div>
             <div class="modal-footer">
               <div class="row">
-                <button id="edit" type="button" class="btn btn-success" data-dismiss="modal">Save</button>
-                <button id="delete" type="button" class="btn btn-danger" data-dismiss="modal">Delete</button>
+                <button id="edit" type="button" class="btn btn-success" >Save</button>
+                <button id="delete" type="button" class="btn btn-danger" >Delete</button>
               </div>
             </div>
           </div>
@@ -157,86 +146,78 @@
           });
           TableManageButtons.init();
         </script>
-        <script type="text/javascript" src="<?php echo base_url(); ?>js/moment/moment.min.js"></script>
-       <script type="text/javascript" src="<?php echo base_url(); ?>js/datepicker/daterangepicker.js"></script>
-        <script src="<?php echo base_url(); ?>js/input_mask/jquery.inputmask.js"></script>
 
           <script>
             $(document).ready(function() {
-              $('#newbirthday').daterangepicker({
-                singleDatePicker: true,
-                locale: {
-                  format: 'YYYY-MM-DD',
-                },
-                showDropdowns: true,
-                container:'#modal1'
-              });
-              $(":input").inputmask();
 
               $(document).on('click', '.modal-trigger', function(e) {
                 e.preventDefault();
                 var dataid = $(this).data('id');
-                var dss_id = $("#"+ dataid + " .dss_id").val();
-                var gender = $("#"+ dataid + " .gender").html();
                 $('#modalid').val(dataid);
-                $('#newfirstname').val($("#"+ dataid + " .dss_firstname").html());
-                $('#newlastname').val($("#"+ dataid + " .dss_lastname").html());
-                $('#newemail').val($("#"+ dataid + " .email").html());
-                $('#newgender option[value= "' + gender + '"]').attr("selected","selected");
-                $('#newcontactno').val($("#"+ dataid + " .contactno").html());
-                $('#newbirthday').val($("#"+ dataid + " .birthday").html());
+                $('#newitemcode').val($("#"+ dataid + " .item_code").html());
+                $('#newitemname').val($("#"+ dataid + " .item_name").html());
+                $('#newitemcategory').val($("#"+ dataid + " .item_category").html());
+                $('#newitemcost').val($("#"+ dataid + " .item_cost").html());
+                $('#newitemstock').val($("#"+ dataid + " .item_stock").html());
               });    
 
               var path = "<?php echo site_url(); ?>";
-              var app = "dssController";
+              var app = "InventoryController";
               $("#edit").click(function(e){
-                var dss_id = $("#modalid").val();
-                var firstname = $("#newfirstname").val();
-                var lastname = $("#newlastname").val();
-                var gender = $("#newgender").val();
-                var contactno = $("#newcontactno").val();
-                var email = $("#newemail").val();
-                var birthday = $("#newbirthday").val();
+                e.preventDefault();
+                var item_code = $("#modalid").val();
+                var item_name = $("#newitemname").val();
+                var item_cost = $("#newitemcost").val();
+                var item_stock = $("#newitemstock").val();
+                var item_category = $("#newitemcategory").val();
                 $.ajax({
                   method: 'POST',
-                    url: path + "/" + app + "/editDSS",
+                    url: path + "/" + app + "/editInventoryItem",
                     cache: false,
-                    data: {dss_id: dss_id, firstname: firstname, lastname: lastname, gender:gender, contactno: contactno, email: email, birthday: birthday},
+                    data: {item_code:item_code, item_name:item_name, item_category:item_category, item_cost:item_cost, item_stock:item_stock},
                     async:false,
                     success: function (data){
                       if(data.status == "success"){
-                        alert("Edited.");
+                        var msg = data.message;
+                        //alert(msg);
                         location.reload();
+                      
+
                       }else{
-                        alert("Error has occurred.");
+                        var msg = data.message;
+                        $("#message-info").html('<div class="col-md-12 col-sm-12 col-xs-12 alert alert-danger">'+msg+'</div>');
                       }
 
                     },
                     error: function (data){
-                      alert(data);
+                      $("#message-info").html('<div class="col-md-12 col-sm-12 col-xs-12 alert alert-danger">Error has Occurred.</div>');
                     } 
                 });
               });
 
               $("#delete").click(function(e){
-                var dss_id = $("#modalid").val();
-                var name = $("#newfull_name").val();
+                var item_code = $("#modalid").val();
                 $.ajax({
                   method: 'POST',
-                    url: path + "/" + app + "/deleteDSS",
+                    url: path + "/" + app + "/deleteInventoryItem",
                     cache: false,
-                    data: {dss_id: dss_id},
+                    data: {item_code: item_code},
                     async:false,
                     success: function (data){
                       if(data.status == "success"){
-                        alert("Deleted.");
+                        var msg = data.message;
+                        //alert(msg);
                         location.reload();
+                      
+
                       }else{
-                        alert("Error has occurred.");
+                        var msg = data.message;
+                        $("#message-info").html('<div class="col-md-12 col-sm-12 col-xs-12 alert alert-danger">'+msg+'</div>');
                       }
+
                     },
                     error: function (data){
-                      alert(data);
+                      $("#message-info").html('<div class="col-md-12 col-sm-12 col-xs-12 alert alert-danger">Error has Occurred.</div>');
                     } 
                 });          
             });

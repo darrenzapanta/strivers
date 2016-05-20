@@ -3,6 +3,7 @@ Class Dsp extends CI_Model
 {
   public function __construct() {
     parent::__construct();
+    $this->load->model('Operations','',TRUE);
   }
 
   function unassignDSP($dsp_id){
@@ -24,6 +25,19 @@ Class Dsp extends CI_Model
 	}else{
 		return true;
 	}  	
+  }
+
+  function getDSPbyDealerno($dealerno){
+  	$this->db->select('*');
+  	$this->db->from('dsp_details');
+  	$this->db->where('dsp_dealer_no', $dealerno);
+  	$this->db->join('dsp', 'dsp.dsp_id = dsp_details.dsp_id');
+  	$query = $this->db->get();
+  	if($query->num_rows() == 1){
+  		return $query->result();
+  	}else{
+  		return false;
+  	}
   }
 
   function addDSP($data, $data2){
@@ -49,8 +63,6 @@ Class Dsp extends CI_Model
 		}else {
 			return false;
 		}
-
-
   }
 
   function deleteDSP($dsp_id){
@@ -66,7 +78,7 @@ Class Dsp extends CI_Model
   	  $this->db->trans_start();
 	  $this->db->where('dsp_id', $dsp_id);
 	  $this->db->update('dsp', $data);
-	  $this->db->where('dsp_id', $dsp_id);
+	  $this->db->where('dsp_dealer_no', $data2['dsp_dealer_no']);
   	  $this->db->update('dsp_details', $data2);
   	  $this->db->trans_complete();
   	  return true;
@@ -76,7 +88,7 @@ Class Dsp extends CI_Model
   	$this->db->select('*');
   	$this->db->from('dsp');
   	$this->db->join('dsp_details', 'dsp.dsp_id = dsp_details.dsp_id');
-  	$this->db->join('dss', 'dss.dss_id = dsp.dss_id');
+  	$this->db->join('am', 'am.am_code = dsp.am_code');
   	$query = $this->db->get();
     return $query->result();
   }
@@ -100,7 +112,6 @@ Class Dsp extends CI_Model
  function getDSPbyID($dsp_id){
  	$this->db->select('*');
 	$this->db->from('dsp');
-	$this->db->join('dsp_details', 'dsp.dsp_id = dsp_details.dsp_id');
 	$this ->db-> where('dsp.dsp_id', $dsp_id);
 	$query = $this -> db -> get();
 	if($query -> num_rows() == 1)
@@ -113,10 +124,39 @@ Class Dsp extends CI_Model
 	} 	
  }
 
- function getAllDSPbyDSS($dss_id){
+ function addBalance($dsp_dealer_no, $amount){
+ 	$this->db->select('*');
+	$this->db->from('dsp_details');
+	$this->db->where('dsp_dealer_no', $dsp_dealer_no);
+	$query = $this->db->get();
+	if($query->num_row() == 1){
+		foreach($query->result() as $res){
+			$cur_bal = $res->dsp_balance;
+			$percent = $res->dsp_percentage;
+		}
+		$netamount = $this->Operations->getNetAmount($amount, $percent);
+		$run_bal = $this->Operations->add($cur_bal, $netamount);
+		$data = array('dsp_balance' => $run_bal);
+		$this->db->trans_start();
+	  	$this->db->where('dsp_dealer_no', $dsp_dealer_no);
+	  	$this->db->update('dsp_details', $data);		
+	  	$this->load->trans_complete();
+	  	if($this->db->trans_status() === FALSE){
+	  		return false;
+	  	}else{
+	  		return true;
+	  	}
+	}else{
+		return false;
+	}
+
+
+ }
+
+ function getAllDSPbyAM($am_code){
  	$this->db->select('*');
   	$this->db->from('dsp');
-  	$this->db->where('dss_id', $dss_id);
+  	$this->db->where('am_code', $am_code);
   	$query = $this->db->get();
   	if($query -> num_rows() > 0)
 	{

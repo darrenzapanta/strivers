@@ -35,7 +35,13 @@
             <div class="col-md-9">
               <div class="x_panel">
                 <div class="x_title">
-                  <h2>Transaction Summary<small>Weekly progress (<?php echo date('Y-m-d', strtotime('-1 week'))." to ".date('Y-m-d') ; ?>)</small></h2>
+                  <h2>Transaction Summary</h2>
+                  <div class="filter">
+                    <div id="reportrange" class="pull-right" style="background: #fff; cursor: pointer; padding: 5px 10px; border: 1px solid #ccc">
+                      <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+                      <span>December 30, 2014 - January 28, 2015</span> <b class="caret"></b>
+                    </div>
+                  </div>                  
                   <div class="clearfix"></div>
                 </div>
                 <div class="x_content">
@@ -43,7 +49,15 @@
                     <div class="demo-container" style="height:280px">
                       <div id="placeholder33x" class="demo-placeholder"></div>
                     </div>
-
+                    <div class="tiles">
+                      <div class="col-md-4 tile">
+                        <span>Total Revenue</span>
+                        <h1 id="revenue"></h1>
+                        <span class="sparkline22 graph" style="height: 160px;">
+                                        <canvas width="200" height="60" style="display: inline-block; vertical-align: top; width: 94px; height: 30px;"></canvas>
+                                    </span>
+                      </div>
+                    </div>
                   </div>
                   </div>
                   </div>
@@ -136,29 +150,9 @@
     var chartColours = ['#96CA59', '#3F97EB', '#72c380', '#6f7a8a', '#f7cb38', '#5a8022', '#2c7282'];
 
     //generate random number for charts
-    randNum = function() {
-      return (Math.floor(Math.random() * (1 + 40 - 20))) + 20;
-    }
 
-    $(function() {
-      var d1 = <?php echo $graph ?>;
-      var d2 = [];
-      var d3 = [];
-      var label = [];
-      var tck =[];
-      for(var i = 0; i < d1.length; i++){
-        d2 = [];
-        label.push(d1[i][0]);
-        for(var j = 0; j < d1[1][1].length; j++){
-            tck.push([d1[1][1].length-j,d1[i][1][j][0]]);
-            d2.push([d1[1][1].length-j, d1[i][1][j][1]]);
-          }
-        d3.push(d2);
-      }
-      var tickSize = [1, "day"];
-      var tformat = "%d/%m/%y";
-
-      //graph options
+    function updateChart(tck, d3){
+      var label = "Transaction";
       var options = {
         grid: {
           show: true,
@@ -221,8 +215,8 @@
         }
       };
       var plot = $.plot($("#placeholder33x"), [{
-        label: label[0],
-        data: d3[0],
+        label: label,
+        data: d3,
         lines: {
           fillColor: "rgba(150, 202, 89, 0.12)"
         }, //#96CA59 rgba(150, 202, 89, 0.42)
@@ -230,18 +224,8 @@
           fillColor: "#fff"
         }
       },
-      {
-        label: label[1],
-        data: d3[1],
-        lines: {
-          fillColor: "rgba(150, 202, 89, 0.12)"
-        }, //#96CA59 rgba(150, 202, 89, 0.42)
-        points: {
-          fillColor: "#fff"
-        }
-      }
-      ], options);
-    });
+      ], options);      
+    }
   </script>
   <!-- /flot -->
   <!--  -->
@@ -267,12 +251,35 @@
         }
         });
       numeral.language('en');
+        var path = "<?php echo site_url(); ?>";
+        var app = "TransactionController";
+        var d1 = moment().startOf('month').format('MMMM D, YYYY'); 
+        var d2 = moment().endOf('month').format('MMMM D, YYYY');
+        $.ajax({
+          method: 'POST',
+            url: path + "/" + app + "/graphSales",
+            cache: false,
+            data: {date1: d1, date2: d2},
+            async:false,
+            success: function (data){
+              updateChart(data['tick'], data['data']);
+              $('#revenue').html(numeral(data['revenue']).format('$0,0.00'));
+            },
+            error: function (data){
+
+            } 
+        }); 
+
+
+
       $('div[name="currentbalance"]').each(function( index ) {
         var text = $( this ).text();
 
         $(this).html(numeral(text).format('$0,0.00'));
       });      
+
       var cb = function(start, end, label) {
+
         console.log(start.toISOString(), end.toISOString(), label);
         $('#reportrange span').html(start.format('MMMM D, YYYY') + ' - ' + end.format('MMMM D, YYYY'));
         //alert("Callback has fired: [" + start.format('MMMM D, YYYY') + " to " + end.format('MMMM D, YYYY') + ", label = " + label + "]");
@@ -281,11 +288,7 @@
       var optionSet1 = {
         startDate: moment().subtract(29, 'days'),
         endDate: moment(),
-        minDate: '01/01/2012',
-        maxDate: '12/31/2015',
-        dateLimit: {
-          days: 60
-        },
+        minDate: '01/01/2016',
         showDropdowns: true,
         showWeekNumbers: true,
         timePicker: false,
@@ -303,9 +306,10 @@
         buttonClasses: ['btn btn-default'],
         applyClass: 'btn-small btn-primary',
         cancelClass: 'btn-small',
-        format: 'MM/DD/YYYY',
+        
         separator: ' to ',
         locale: {
+          format: 'MM/DD/YYYY',
           applyLabel: 'Submit',
           cancelLabel: 'Clear',
           fromLabel: 'From',
@@ -316,16 +320,27 @@
           firstDay: 1
         }
       };
-      $('#reportrange span').html(moment().subtract(29, 'days').format('MMMM D, YYYY') + ' - ' + moment().format('MMMM D, YYYY'));
+      $('#reportrange span').html(moment().startOf('month').format('MMMM D, YYYY') + ' - ' + moment().endOf('month').format('MMMM D, YYYY'));
       $('#reportrange').daterangepicker(optionSet1, cb);
-      $('#reportrange').on('show.daterangepicker', function() {
-        console.log("show event fired");
-      });
-      $('#reportrange').on('hide.daterangepicker', function() {
-        console.log("hide event fired");
-      });
       $('#reportrange').on('apply.daterangepicker', function(ev, picker) {
         console.log("apply event fired, start/end dates are " + picker.startDate.format('MMMM D, YYYY') + " to " + picker.endDate.format('MMMM D, YYYY'));
+
+        var date1 = picker.startDate.format('MMMM D, YYYY');
+        var date2 = picker.endDate.format('MMMM D, YYYY');
+        $.ajax({
+          method: 'POST',
+            url: path + "/" + app + "/graphSales",
+            cache: false,
+            data: {date1: date1, date2: date2},
+            async:false,
+            success: function (data){
+              updateChart(data['tick'], data['data']);
+              $('#revenue').html(numeral(data['revenue']).format('$0,0.00'));
+            },
+            error: function (data){
+
+            } 
+        });  
       });
       $('#reportrange').on('cancel.daterangepicker', function(ev, picker) {
         console.log("cancel event fired");

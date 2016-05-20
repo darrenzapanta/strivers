@@ -71,8 +71,14 @@ Class Purchaseorder extends CI_Model
 
   }
 
-  function recomputeBalance(){
-
+  function getPurchaseOrderByDate($date1, $date2, $network){
+  $this->db->select('*');
+  $this->db->from('purchase_order');
+  $this->db->where("CAST(date_created AS DATE) between '".$date1."' and '".$date2."'");
+  $this->db->where('global_name', $network);
+  $this->db->order_by('date_created ASC');
+  $query = $this->db->get();
+  return $query->result(); 
   }
 
   function deletePurchaseOrder($purchase_id){

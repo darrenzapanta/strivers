@@ -5,26 +5,82 @@ Class Transaction extends CI_Model
   	
     parent::__construct();
     $this->load->model('globalsim','',TRUE);
+    $this->load->model('dsp','',TRUE);
+    $this->load->model('Am','',TRUE);
+    $this->load->model('Operations','',TRUE);
   }
-
-  function addTransaction($data){
+  function totalSalesByAMCode($date1, $date2){
+    $this->db->select('am_code, sum(amount) as amount');
+    $this->db->from('load_transaction');
+    $this->db->where("CAST(date_created AS DATE) between '".$date1."' and '".$date2."'");
+    $this->db->group_by('am_code');
+    $query = $this->db->get();
+    return $query;
+  }
+  function addTransaction($data, $simbalance, $totalbalance, $am_code){
     $this->db->trans_start();
   	$this->db->insert('load_transaction', $data);
-	if ($this->db->affected_rows() > 0) {
-		$data2 = array(
-			'amount' => $data['amount']
-			);
-		$global_name = $data['global_name'];
-		$ret = $this->globalsim->updateBalance($data2, $global_name, "sub");
-    if($ret == false){
-      $this->db->trans_rollback();
+    $this->db->where('global_name', $data['global_name']);
+    $this->db->update('global_balance', $simbalance);
+    if($am_code == 'Unassigned'){
+      $this->db->where('dsp_dealer_no', $data['dealer_no']);
+      $this->db->update('dsp_details', $totalbalance);  
+    }else{
+      $this->db->where('am_code', $am_code);
+      $this->db->update('am', $totalbalance);       
     }
     $this->db->trans_complete();
-		return true;
-	}else {
-		return false;
-	}
+    if($this->db->trans_status() === FALSE){
+      return false;
+    }
+    return true;
 
+  }
+
+  function addPaymentUN($data, $totalbalance, $dealer_no){
+    $this->db->trans_start();
+    $this->db->insert('load_payment_un', $data);
+    $this->db->where('dsp_dealer_no', $dealer_no);
+    $this->db->update('dsp_details', $totalbalance); 
+    $this->db->trans_complete();
+    if($this->db->trans_status() === FALSE){
+      return false;
+    }
+    return true;    
+  }
+
+  function addPaymentAM($data, $totalbalance, $am_code){
+    $this->db->trans_start();
+    $this->db->insert('load_payment_am', $data);
+    $this->db->where('am_code', $am_code);
+    $this->db->update('am', $totalbalance); 
+    $this->db->trans_complete();
+    if($this->db->trans_status() === FALSE){
+      return false;
+    }
+    return true;
+  }
+
+  function getTransactionByTransactionCode($transaction_code){
+    $this->db->from('load_transaction');
+    $this->db->where('transaction_code', $transaction_code);
+    $query = $this->db->get();
+    if($query->num_rows() == 1){
+      return $query->result();
+    }else{
+      return false;
+    }    
+  }
+
+  function getTransactionByConfirmno($confirm_no){
+    $this->db->from('load_transaction');
+    $this->db->where('confirm_no', $confirm_no);
+    $query = $this->db->get();
+    if($query->num_rows() == 1){
+      return $query->result();
+    }else{
+      return false;
+    }
   }
 
   function getAllTransaction(){
@@ -35,8 +91,19 @@ Class Transaction extends CI_Model
     return $query->result();
   }
 
+  function getPaymentByTransactionCode($transaction_code){
+    $this->db->from('load_payment_un');
+    $this->db->where('payment_transaction_code', $transaction_code);
+    $query = $this->db->get();
+    if($query->num_rows() == 1){
+      return $query->result();
+    }else{
+      return false;
+    }    
+  }
+
   function getTransactionForGraph($date1, $date2, $global_name){
-    $this->db->select('count(transaction_id) as count, cast(date_created as date) as date_created');
+    $this->db->select('count(transaction_code) as count, cast(date_created as date) as date_created');
     $this->db->from('load_transaction');
     $this->db->where('global_name', $global_name);
     if($date1 != $date2){
@@ -67,6 +134,45 @@ Class Transaction extends CI_Model
     return $query->result();
   }
 
+  function getTransactionUNByDate($date1, $date2){
+    $this->db->select('*');
+    $this->db->from('load_payment_un');
+    if($date1 != $date2){
+      $this->db->where("CAST(date_created AS DATE) between '".$date1."' and '".$date2."'");
+    }else{
+      $this->db->where("CAST(date_created AS DATE) = '".$date1."'");
+    }
+    $this->db->order_by('date_created', 'DESC');
+    $query = $this->db->get();
+    if($query->num_rows() > 0){
+      return $query->result();
+    } 
+    return false;
+  }
+
+  function getTotalRevenue($date1, $date2){
+    $this->db->select('amount, load_percentage');
+    $this->db->from('load_transaction');
+    $this->db->where("CAST(date_created AS DATE) between '".$date1."' and '".$date2."'");
+    $query = $this->db->get();
+    return $query->result();
+  }
+
+  function getTransactionAMByDate($date1, $date2){
+    $this->db->select('*');
+    $this->db->from('load_payment_am');
+    if($date1 != $date2){
+      $this->db->where("CAST(date_created AS DATE) between '".$date1."' and '".$date2."'");
+    }else{
+      $this->db->where("CAST(date_created AS DATE) = '".$date1."'");
+    }
+    $this->db->order_by('date_created', 'DESC');
+    $query = $this->db->get();
+    if($query->num_rows() > 0){
+      return $query->result();
+    } 
+    return false;
+  }
   function getTransactionByDate($date1, $date2, $global_name){
     $this->db->select('*');
     $this->db->from('load_transaction');
@@ -92,7 +198,9 @@ Class Transaction extends CI_Model
       $data['dealer_no'] = $trans['dealer_no'];   
       $data['run_bal'] = " ";   
       $data['beg_bal'] = " ";
-      $data['transaction_id'] = $trans['transaction_id'];
+      $data['transaction_code'] = $trans['transaction_code'];
+      $data['percentage'] = $trans['load_percentage'] * 100;
+      $data['net_amount'] = $trans['net_amount'];
       $data2[] = $data;   
     }
     return $data2;
@@ -136,7 +244,9 @@ Class Transaction extends CI_Model
           $current_balance += $trans['amount'];
           $data['dsp_id'] = $trans['dsp_id'];
           $data['beg_bal'] = $current_balance;
-          $data['transaction_id'] = $trans['transaction_id'];
+          $data['transaction_code'] = $trans['transaction_code'];
+          $data['percentage'] = $trans['load_percentage'] * 100;
+          $data['net_amount'] = $trans['net_amount'];
           $data['name'] = $trans['dsp_firstname']." ".$trans['dsp_lastname'];
           $data['global_name'] = $global_name;
           $data['amount'] = $trans['amount'];
@@ -153,16 +263,18 @@ Class Transaction extends CI_Model
           if($pochk == 1 && $f_date4 <= $date2){
             $data = array();
             $data['name'] =  "Purchase Order";
-            $data['dsp_id'] = "none";
+            $data['dsp_id'] = "None";
             $data['global_name'] = $global_name;
             $data['run_bal'] = $current_balance;
             $current_balance -= $po['amount'];
             $data['amount'] = $po['amount'];
             $data['beg_bal'] = $current_balance;
-            $data['transaction_id'] = "none";
-            $data['dealer_no'] = " ";
+            $data['transaction_code'] = "None";
+            $data['percentage'] = "";
+            $data['dealer_no'] = "";
+            $data['net_amount'] = "";
             $data['date_created'] = $po['date_created'];
-            $data['confirm_no'] = " ";
+            $data['confirm_no'] = "";
             array_push($result, $data);
           }else{
             $current_balance -= $po['amount'];
@@ -178,7 +290,7 @@ Class Transaction extends CI_Model
     $this->db->trans_start();
     $this->db->select('*');
     $this->db->from('load_transaction');
-    $this->db->where('transaction_id', $trans_id);
+    $this->db->where('transaction_code', $trans_code);
     $query = $this->db->get();
     foreach($query->result() as $row){
       if(floatval($row->amount) != floatval($data['amount']) || $row->global_name != $data['global_name']){
@@ -203,23 +315,118 @@ Class Transaction extends CI_Model
         }
     }
   	$this->db->from('load_transaction');
-	  $this->db->where('transaction_id', $trans_id);
+	  $this->db->where('transaction_code', $trans_code);
 	  $this->db->update('', $data);
     $this->db->trans_complete();
   }
   function getTransactionCount(){
     return $this->db->count_all('load_transaction');
   }
-  function deleteTransaction($trans_id){
+
+  function deleteTransactionUN($payment_id){
+    $this->db->trans_start();
+    $this->db->select('*');
+    $this->db->from('load_payment_un');
+    $this->db->where('load_payment_id', $payment_id);
+    $query = $this->db->get();
+    if($query->num_rows() < 1){
+      return false;
+    }
+    foreach($query->result() as $res){
+      $amount = $res->amount;
+      $dealer_no = $res->dealer_no;
+    }
+    $this->db->select('dsp_balance');
+    $this->db->from('dsp_details');
+    $this->db->where('dsp_dealer_no', $dealer_no);
+    $query = $this->db->get();
+    if($query->num_rows() > 0){
+      foreach($query->result() as $row){
+        $current_balance = $row->dsp_balance;
+      }
+      $run_bal = $this->Operations->add($current_balance, $amount);
+      $data = array('dsp_balance' => $run_bal);
+      $this->db->where('dsp_dealer_no', $dealer_no);
+      $this->db->update('dsp_details', $data);  
+    }
+    $this->db->where('load_payment_id', $payment_id);
+    $this->db->delete('load_payment_un');
+    $this->db->trans_complete();
+
+  }
+
+  function deleteTransactionAM($payment_id){
+    $this->db->trans_start();
+    $this->db->select('*');
+    $this->db->from('load_payment_am');
+    $this->db->where('load_payment_id', $payment_id);
+    $query = $this->db->get();
+    if($query->num_rows() < 1){
+      return false;
+    }
+    foreach($query->result() as $res){
+      $amount = $res->amount;
+      $am_code = $res->am_code;
+    }
+    $this->db->select('am_totalbalance');
+    $this->db->from('am');
+    $this->db->where('am_code', $am_code);
+    $query = $this->db->get();
+    foreach($query->result() as $row){
+      $current_balance = $row->am_totalbalance;
+    }
+    if($query->num_rows() > 0){
+      $run_bal = $this->Operations->add($current_balance, $amount);
+      $data = array('am_totalbalance' => $run_bal);
+      $this->db->where('am_code', $am_code);
+      $this->db->update('am', $data);
+    }
+    $this->db->where('load_payment_id', $payment_id);
+    $this->db->delete('load_payment_am');
+    $this->db->trans_complete();
+
+  }
+  function deleteTransaction($trans_code){
   	$this->db->trans_start();
   	$this->db->select('*');
   	$this->db->from('load_transaction');
-  	$this->db->where('transaction_id', $trans_id);
+  	$this->db->where('transaction_code', $trans_code);
   	$query = $this->db->get();
+    if($query->num_rows() < 1){
+      return false;
+    }
   	foreach($query->result() as $row){
 	  	$globalname = $row->global_name;
 	  	$amount = $row->amount;
+      $net_amount = $row->net_amount;
+      $am_code = $row->am_code;
+      $dealer_no = $row->dealer_no;
   	}
+    if($am_code != 'Unassigned'){
+      $this->db->select('am_totalbalance');
+      $this->db->from('am');
+      $this->db->where('am_code', $am_code);
+      $query = $this->db->get();
+      foreach($query->result() as $row){
+        $current_balance = $row->am_totalbalance;
+      }
+      $run_bal = $this->Operations->subtract($current_balance, $net_amount);
+      $data = array('am_totalbalance' => $run_bal);
+      $this->db->where('am_code', $am_code);
+      $this->db->update('am', $data);
+    }else{
+      $this->db->select('dsp_balance');
+      $this->db->from('dsp_details');
+      $this->db->where('dsp_dealer_no', $dealer_no);
+      $query = $this->db->get();
+      foreach($query->result() as $row){
+        $current_balance = $row->dsp_balance;
+      }
+      $run_bal = $this->Operations->subtract($current_balance, $net_amount);
+      $data = array('dsp_balance' => $run_bal);
+      $this->db->where('dsp_dealer_no', $dealer_no);
+      $this->db->update('dsp_details', $data);      
+    }
     $this->db->select('current_balance');
   	$this->db->from('global_balance');
   	$this->db->where('global_name', $globalname);
@@ -230,10 +437,10 @@ Class Transaction extends CI_Model
 	  foreach($query->result() as $row)
 	  	$current_balance = $row->current_balance;
 	}
-    $data = array ('current_balance' => $current_balance + $amount);
+  $data = array ('current_balance' => $current_balance + $amount);
 	$this->db->where('global_name', $globalname);
 	$this->db->update('global_balance', $data);
-  	$this->db->where('transaction_id', $trans_id);
+  $this->db->where('transaction_code', $trans_code);
 	$this->db->delete('load_transaction');
 	$this->db->trans_complete();
 	if($this->db->affected_rows() >= 0){
@@ -242,5 +449,7 @@ Class Transaction extends CI_Model
 	}
 	return false;
   }
+
+
 
 }

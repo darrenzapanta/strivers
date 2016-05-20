@@ -28,7 +28,7 @@
                         <th>Last Name</th>
                         <th>Network</th>
                         <th>Dealer No.</th>
-                        <th>DSS</th>
+                        <th>Area Manager</th>
                         <th>Balance</th>
                         <th>Percentage</th>
                         <th>E-Mail</th>
@@ -44,18 +44,16 @@
                         <tr class="modal-trigger" data-toggle="modal" data-target="#modal1" data-id="<?php echo $dsp_item->dsp_id; ?>" id="<?php echo $dsp_item->dsp_id; ?>">
                             <td class="dsp_firstname"><?php echo $dsp_item->dsp_firstname; ?></td>
                             <td class="dsp_lastname"><?php echo $dsp_item->dsp_lastname; ?></td>
-                            <td class="network"><?php echo strtoupper($dsp_item->dsp_network); ?></td>
+                            <td class="sim"><?php echo strtoupper($dsp_item->dsp_network); ?></td>
                             <td class="dealerno"><?php echo $dsp_item->dsp_dealer_no; ?></td>
-                            <input class="dss_id" type="hidden" value="<?php echo $dsp_item->dss_id; ?>">
-                            <td class="dss"><?php echo $dsp_item->dss_firstname." ".$dsp_item->dss_lastname; ?></td>
+                            <td class="am"><?php echo $dsp_item->am_code ?></td>
                             <td class="balance"><?php echo $dsp_item->dsp_balance; ?></td>
-                            <td class="percentage"><?php echo $dsp_item->dsp_percentage; ?></td>
+                            <td class="percentage"><?php echo ($dsp_item->dsp_percentage*100) ?></td>
                             <td class="email"><?php echo $dsp_item->dsp_email; ?></td>
                             <td class="birthday"><?php echo $dsp_item->dsp_birthday; ?></td>
                             <td class="gender"><?php echo $dsp_item->dsp_gender; ?></td>
                             <td class="contactno"><?php echo $dsp_item->dsp_contactno; ?></td>
-                            
-                            
+
                         </tr>
                         <?php endif ?>
                      <?php endforeach; ?>  
@@ -76,6 +74,9 @@
               <h4 class="modal-title">Edit DSS</h4>
             </div>
             <div class="modal-body container-fluid">
+             <div class="row" id="message-info">
+
+            </div>
               <div class="form-group">
                       <label for="newfirstname">First Name:</label>
                       <input class="form-control" name="newlastname" id="newfirstname" type="text"/>
@@ -112,21 +113,22 @@
               <br/>
               <br/>
               <div class="form-group col-md-6 col-sm-6 col-xs-12">
-                <label class="control-label col-md-3 col-sm-3 col-xs-12">Assign DSS</label>
+                <label class="control-label col-md-3 col-sm-3 col-xs-12">Assign AM</label>
                 <div class="col-md-6 col-sm-6 col-xs-12">
-                  <select name="newdss" id="newdss" class="form-control">
-                    <?php foreach ($dss as $dss_item): ?>
-                          <option value="<?php echo $dss_item->dss_id; ?>"><?=$dss_item->dss_firstname." ".$dss_item->dss_lastname?></option>
-                    <?php endforeach; ?>
-                  </select>
+                <select name="newam" id="newam" class="form-control">
+                  <?php foreach ($am as $am_item): ?>
+                      <option value="<?php echo $am_item->am_code; ?>"><?=$am_item->am_code?></option> 
+                  <?php endforeach; ?>
+                </select>
                 </div>
               </div>
               <div class="form-group col-md-6 col-sm-6 col-xs-12 pull-left">
                 <label class="control-label col-md-2 col-sm-6 col-xs-12">Network:</label>
                 <div class="col-md-4 col-sm-6 col-xs-12">
-                  <select name="newnetwork" id="newnetwork" class="form-control">
-                    <option value="sun">SUN</option>
-                    <option value="smart" >SMART</option>
+                  <select name="newsim" id="newsim" class="form-control">
+                    <?php foreach ($sim as $sim_item): ?>
+                          <option value="<?php echo $sim_item->global_name; ?>"><?=$sim_item->global_name?></option>
+                    <?php endforeach; ?>
                   </select>
                 </div>
               </div>
@@ -148,7 +150,7 @@
             </div>
             <div class="modal-footer">
               <div class="row">
-                <button id="edit" type="button" class="btn btn-success" data-dismiss="modal">Save</button>
+                <button id="edit" type="button" class="btn btn-success">Save</button>
                 <button id="delete" type="button" class="btn btn-danger" data-dismiss="modal">Delete</button>
               </div>
             </div>
@@ -225,15 +227,18 @@
                 container:'#modal1'
               });
               $(":input").inputmask();
+              $("#modal1").on("hidden.bs.modal", function () {
+                  
+                  location.reload();
+              });
 
               $(document).on('click', '.modal-trigger', function(e) {
                 e.preventDefault();
                 var dataid = $(this).data('id');
                 var dsp_id = $("#"+ dataid + " .dsp_id").val();
-                var dss_id = $("#"+ dataid + " .dss_id").val();
+                var am_code = $("#"+ dataid + " .am").html();
                 var gender = $("#"+ dataid + " .gender").html();
-                var network = $("#"+ dataid + " .network").html();
-                console.log(dss_id);
+                var sim = $("#"+ dataid + " .sim").html();
                 $('#modalid').val(dataid);
                 $('#newfirstname').val($("#"+ dataid + " .dsp_firstname").html());
                 $('#newlastname').val($("#"+ dataid + " .dsp_lastname").html());
@@ -242,12 +247,10 @@
                 $('#newcontactno').val($("#"+ dataid + " .contactno").html());
                 $('#newbirthday').val($("#"+ dataid + " .birthday").html());
                 $('#newdealerno').val($("#"+ dataid + " .dealerno").html());
-                $('#newnetwork option[value= "' + network + '"]').attr("selected","selected");
+                $('#newsim option[value= "' + sim + '"]').attr("selected","selected");
                 $('#newbalance').val($("#"+ dataid + " .balance").html());
                 $('#newpercentage').val($("#"+ dataid + " .percentage").html());
-                $('#newdss option[value= "' + dss_id + '"]').attr("selected","selected");
-
-
+                $('#newam option[value= "' + am_code + '"]').attr("selected","selected");
               });    
 
               var path = "<?php echo site_url(); ?>";
@@ -262,33 +265,34 @@
                 var birthday = $("#newbirthday").val();
                 var percentage = $('#newpercentage').val();
                 var balance = $('#newbalance').val();
-                var dss = $('#newdss').val();
+                var am = $('#newam').val();
                 var dealerno = $('#newdealerno').val();
-                var network = $('#newnetwork').val();
+                var sim = $('#newsim').val();
                 $.ajax({
                   method: 'POST',
-                    url: path + "/" + app + "/editDSP",
+                    url: path + "/" + app + "/editDSP2",
                     cache: false,
-                    data: {dsp_id: dsp_id, firstname: firstname, lastname: lastname, gender:gender, contactno: contactno, email: email, birthday: birthday, percentage: percentage, balance: balance, dss: dss, network: network, dealerno: dealerno},
+                    data: {dsp_id: dsp_id, firstname: firstname, lastname: lastname, gender:gender, contactno: contactno, email: email, birthday: birthday, percentage: percentage, balance: balance, am: am, sim:sim, dealerno: dealerno},
                     async:false,
                     success: function (data){
                       if(data.status == "success"){
-                        alert("Edited.");
-                        location.reload();
+                        var msg = data.message;
+                        $("#message-info").html('<div class="col-md-12 col-sm-12 col-xs-12 alert alert-info">'+msg+'</div>');
+                        
                       }else{
-                        alert("Error has occurred.");
+                        var msg = data.message;
+                        $("#message-info").html('<div class="col-md-12 col-sm-12 col-xs-12 alert alert-danger">'+msg+'</div>');
                       }
 
                     },
                     error: function (data){
-                      alert(data);
+                      $("#message-info").html('<div class="col-md-12 col-sm-12 col-xs-12 alert alert-danger">Error has Occurred.</div>');
                     } 
                 });
               });
 
               $("#delete").click(function(e){
                 var dsp_id = $("#modalid").val();
-                var name = $("#newfull_name").val();
                 $.ajax({
                   method: 'POST',
                     url: path + "/" + app + "/deleteDSP",

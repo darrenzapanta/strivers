@@ -8,7 +8,9 @@ class DspController extends CI_Controller {
    $this->load->helper('url');
    $this->load->library('session');
    $this->load->model('dsp','',TRUE);
-   $this->load->model('dss','',TRUE);
+   $this->load->model('Am','',TRUE);
+   $this->load->model('Globalsim','',TRUE);
+   $this->load->model('Operations','',TRUE);
    if(!($this->session->userdata('logged_in') == true)){
       $this->load->view('errors/index');
    }
@@ -33,16 +35,17 @@ class DspController extends CI_Controller {
    $this->form_validation->set_rules('birthday', 'Date of Birth', 'trim|required');
    $this->form_validation->set_rules('email', 'E-mail', 'trim');
    $this->form_validation->set_rules('contactno', 'Contact Number', 'trim');
-   $this->form_validation->set_rules('network', 'Network', 'trim|required|callback_check_network');
-   $this->form_validation->set_rules('dss', 'DSS', 'trim|callback_check_dss');
-   $this->form_validation->set_rules('percentage', 'Percentage', 'trim|numeric');
-   $this->form_validation->set_rules('balance', 'Balance', 'trim|numeric');
+   $this->form_validation->set_rules('sim', 'Sim', 'trim|required|callback_check_sim');
+   $this->form_validation->set_rules('am', 'Area Manager', 'trim|required|callback_check_am');
+   $this->form_validation->set_rules('percentage', 'Percentage', 'trim|numeric|required');
+   $this->form_validation->set_rules('balance', 'Balance', 'trim|numeric|required');
    
    if($this->form_validation->run() == FALSE)
    {
      //Field validation failed.
      $GLOBALS['data']['page'] = "adddsp";
-     $GLOBALS['data']['dss'] = $this->dss->getAllDSS();
+     $GLOBALS['data']['am'] = $this->Am->getAllAM();
+     $GLOBALS['data']['sim'] = $this->Globalsim->getAllSim();
      $this->load->view('templates/header', $GLOBALS['data']);
      $this->load->view('adddsp');
      $this->load->view('templates/footer');
@@ -51,25 +54,26 @@ class DspController extends CI_Controller {
    {
      $firstname = $this->input->post('firstname');
      $lastname = $this->input->post('lastname');
-     $network = $this->input->post('network');
+     $sim = $this->input->post('sim');
      $email = $this->input->post('email');
      $contactno = $this->input->post('contactno');
      $birthday = $this->input->post('birthday');
      $dealerno = $this->input->post('dealerno');
-     $percentage = $this->input->post('percentage');
+     $temp_percentage = $this->input->post('percentage');
      $balance = $this->input->post('balance');
-     $dss = $this->input->post('dss');
+     $am = $this->input->post('am');
      $gender = $this->input->post('gender');
-      $data = array(
+     $percentage = $this->Operations->convertPercentToFraction($temp_percentage);
+     $data = array(
                'dsp_firstname' => $firstname,
                'dsp_lastname' => $lastname,
                'dsp_birthday' => $birthday,
                'dsp_email' => $email,
-               'dss_id' => $dss,
+               'am_code' => $am,
                'dsp_gender' => $gender
                );
      $data2 =  array(
-                    'dsp_network' => strtoupper($network),
+                    'dsp_network' => $sim,
                     'dsp_dealer_no' => $dealerno,
                     'dsp_percentage' => $percentage,
                     'dsp_balance' => $balance,
@@ -90,76 +94,64 @@ class DspController extends CI_Controller {
       }
    }
 
-function check_network($network){
-  if($network == "sun" || $network == "smart"){
+
+function check_sim($sim){
+  if($this->Globalsim->getSimbyName($sim) != false){
     return true;
-  }else{
-   $this->form_validation->set_message('check_network', 'Invalid Network.');
-   return false;
+
+  }else{ 
+    $this->form_validation->set_message('check_sim', 'Invalid Sim');
+    return false;
   }
  }
 
  function check_dealerno($dealerno){
-    if($this->dsp->checkDealerNo($dealerno))
-      return true;
-    else{
-      $this->form_validation->set_message('check_dealerno', 'Duplicate Dealer Number.');
-      return false;
+    if(isset($_POST['dsp_id'])){
+      $dsp_id =$this->input->post('dsp_id');
+      $result = $this->dsp->getDSPbyDealerno($dealerno);
+      if($result != false){
+        foreach ($result as $res){
+          if($res->dsp_id == $dsp_id){
+            return true;
+          }else{
+            $this->form_validation->set_message('check_dealerno', 'Duplicate Dealer Number.');
+            return false;       
+          }
+        }
+      }else{
+        return true;
+      }
+    }else{
+      if($this->dsp->checkDealerNo($dealerno))
+        return true;
+      else{
+        $this->form_validation->set_message('check_dealerno', 'Duplicate Dealer Number.');
+        return false;
+      }
     }
  }
 
- function check_dss($dss){
-  if($dss == null){
+ function check_dsp_id($dsp_id){
+  if($this->dsp->getDSPbyID($dsp_id) != false){
+    return true;
+  }else{
+    $this->form_validation->set_message('check_dsp_id', 'DSP not found.');
+    return false;
+  }
+ }
+
+ function check_am($am){
+  if($am == null){
    return true;
   }
-  if($this->dss->getDSSbyID($dss) == false){
-    $this->form_validation->set_message('check_dss', 'Invalid DSS.');
+  if($this->Am->getAMbyCode($am) == false){
+    $this->form_validation->set_message('check_am', 'Invalid Area Manager.');
     return false;
   }else{
     return true;
   }
  }
 
- function editDSP()
- {
-     $firstname = $this->input->post('firstname');
-     $lastname = $this->input->post('lastname');
-     $network = $this->input->post('network');
-     $email = $this->input->post('email');
-     $contactno = $this->input->post('contactno');
-     $birthday = $this->input->post('birthday');
-     $dealerno = $this->input->post('dealerno');
-     $percentage = $this->input->post('percentage');
-     $balance = $this->input->post('balance');
-     $dss = $this->input->post('dss');
-     $dsp_id =$this->input->post('dsp_id');
-     $gender = $this->input->post('gender');
-      $data = array(
-               'dsp_firstname' => $firstname,
-               'dsp_lastname' => $lastname,
-               'dsp_birthday' => $birthday,
-               'dsp_email' => $email,
-               'dss_id' => $dss,
-               'dsp_gender' => $gender,
-               );
-     $data2 =  array(
-                    'dsp_network' => strtoupper($network),
-                    'dsp_dealer_no' => $dealerno,
-                    'dsp_percentage' => $percentage,
-                    'dsp_balance' => $balance,
-                    'dsp_contactno' => $contactno
-                 );
-     $ret = $this->dsp->editDSP($data, $data2, $dsp_id);
-     if($ret === false){
-        header('Content-type: application/json');
-        $response_array['status'] = 'failed';    
-        echo json_encode($response_array);
-     }else{
-        header('Content-type: application/json');
-        $response_array['status'] = 'success';    
-        echo json_encode($response_array);
-     }
- }
 
  function deleteDSP()
  {
@@ -176,13 +168,73 @@ function check_network($network){
      }
  }
 
- function assignDSStoDSP()
+ function editDSP2()
  {
+   //This method will have the credentials validation
+   $this->load->library('form_validation');
+   $this->form_validation->set_rules('dsp_id', 'DSP ID', 'trim|required|callback_check_dsp_id');
+   $this->form_validation->set_rules('dealerno', 'Dealer No', 'trim|required|callback_check_dealerno');
+   $this->form_validation->set_rules('firstname', 'First Name', 'trim|required');
+   $this->form_validation->set_rules('lastname', 'Last Name', 'trim|required');
+   $this->form_validation->set_rules('birthday', 'Date of Birth', 'trim|required');
+   $this->form_validation->set_rules('email', 'E-mail', 'trim|valid_email');
+   $this->form_validation->set_rules('contactno', 'Contact Number', 'trim');
+   $this->form_validation->set_rules('sim', 'Sim', 'trim|required|callback_check_sim');
+   $this->form_validation->set_rules('am', 'Area Manager', 'trim|required|callback_check_am');
+   $this->form_validation->set_rules('percentage', 'Percentage', 'trim|numeric');
+   $this->form_validation->set_rules('balance', 'Balance', 'trim|numeric');
+   
+   if($this->form_validation->run() == FALSE)
+   {
+      header('Content-type: application/json');
+      $response_array['status'] = 'failed';    
+      $response_array['message'] = validation_errors();
+      echo json_encode($response_array);
 
+   }
+   else
+   {
+     $dsp_id =$this->input->post('dsp_id');
+     $firstname = $this->input->post('firstname');
+     $lastname = $this->input->post('lastname');
+     $sim = $this->input->post('sim');
+     $email = $this->input->post('email');
+     $contactno = $this->input->post('contactno');
+     $birthday = $this->input->post('birthday');
+     $dealerno = $this->input->post('dealerno');
+     $temp_percentage = $this->input->post('percentage');
+     $balance = $this->input->post('balance');
+     $am = $this->input->post('am');
+     $gender = $this->input->post('gender');
+     $percentage = $this->Operations->convertPercentToFraction($temp_percentage);
+     $data = array(
+               'dsp_firstname' => $firstname,
+               'dsp_lastname' => $lastname,
+               'dsp_birthday' => $birthday,
+               'dsp_email' => $email,
+               'am_code' => $am,
+               'dsp_gender' => $gender
+               );
+     $data2 =  array(
+                    'dsp_network' => $sim,
+                    'dsp_dealer_no' => $dealerno,
+                    'dsp_percentage' => $percentage,
+                    'dsp_balance' => $balance,
+                    'dsp_contactno' => $contactno
+                 );
+     $ret = $this->dsp->editDSP($data, $data2, $dsp_id);
+       if($ret === false){
+          header('Content-type: application/json');
+          $response_array['status'] = 'failed';    
+          $response_array['message'] = 'Error has Occurred.';
+          echo json_encode($response_array);
+       }else{
+          header('Content-type: application/json');
+          $response_array['status'] = 'success'; 
+          $response_array['message'] = 'Edited Successfully';   
+          echo json_encode($response_array);
+       } 
+    }
+   }
  }
-
-
- 
-}
- 
 ?>
