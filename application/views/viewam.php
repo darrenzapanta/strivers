@@ -163,8 +163,8 @@
                         var msg = data.message;
                         //alert(msg);
                         $("#message-info").html('<div class="col-md-12 col-sm-12 col-xs-12 alert alert-info">'+msg+'</div>');
-                        $("#"+ am_id + " .am_code").html(am_code);
-                        $("#"+ am_id + " .location").html(location);
+                        $("#"+ am_code + " .am_code").html(am_code);
+                        $("#"+ am_code + " .location").html(location);
                         
                       }else{
                         var msg = data.message;

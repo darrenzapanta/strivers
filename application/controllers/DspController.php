@@ -155,16 +155,18 @@ function check_sim($sim){
 
  function deleteDSP()
  {
-   $dsp_id = $this->input->post('dsp_id');
-   $ret = $this->dsp->deleteDSP($dsp_id);
-     if($ret === false){
-        header('Content-type: application/json');
-        $response_array['status'] = 'failed';    
-        echo json_encode($response_array);
-     }else{
-        header('Content-type: application/json');
-        $response_array['status'] = 'success';    
-        echo json_encode($response_array);
+   if($this->session->userdata('type') == 'admin'){
+     $dsp_id = $this->input->post('dsp_id');
+     $ret = $this->dsp->deleteDSP($dsp_id);
+       if($ret === false){
+          header('Content-type: application/json');
+          $response_array['status'] = 'failed';    
+          echo json_encode($response_array);
+       }else{
+          header('Content-type: application/json');
+          $response_array['status'] = 'success';    
+          echo json_encode($response_array);
+       }
      }
  }
 
@@ -215,6 +217,7 @@ function check_sim($sim){
                'am_code' => $am,
                'dsp_gender' => $gender
                );
+     if($this->session->userdata('type') == 'admin'){
      $data2 =  array(
                     'dsp_network' => $sim,
                     'dsp_dealer_no' => $dealerno,
@@ -222,6 +225,13 @@ function check_sim($sim){
                     'dsp_balance' => $balance,
                     'dsp_contactno' => $contactno
                  );
+      }else{
+     $data2 =  array(
+                    'dsp_network' => $sim,
+                    'dsp_dealer_no' => $dealerno,
+                    'dsp_percentage' => $percentage,
+                    'dsp_contactno' => $contactno        
+      }
      $ret = $this->dsp->editDSP($data, $data2, $dsp_id);
        if($ret === false){
           header('Content-type: application/json');

@@ -91,6 +91,7 @@ class AmController extends CI_Controller {
  }
 
  function deleteAM(){
+  if($this->session->userdata('type') == 'admin'){
    $am_code = $this->input->post('am_code');
    $result = $this->dsp->getAllDSPbyAM($am_code);
    $data = null;
@@ -111,8 +112,9 @@ class AmController extends CI_Controller {
         header('Content-type: application/json');
         $response_array['status'] = 'success';    
         echo json_encode($response_array);
-     }  
- }
+     } 
+   }
+  }
 
 
 
