@@ -230,7 +230,8 @@ function check_sim($sim){
                     'dsp_network' => $sim,
                     'dsp_dealer_no' => $dealerno,
                     'dsp_percentage' => $percentage,
-                    'dsp_contactno' => $contactno        
+                    'dsp_contactno' => $contactno
+                    );        
       }
      $ret = $this->dsp->editDSP($data, $data2, $dsp_id);
        if($ret === false){
