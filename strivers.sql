@@ -54,7 +54,7 @@ CREATE TABLE `dsp_details` (
   `dsp_dealer_no` varchar(30) NOT NULL,
   `dsp_network` varchar(10) NOT NULL,
   `dsp_contactno` varchar(50) NOT NULL,
-  `dsp_percentage` numeric(4,2) DEFAULT 0,
+  `dsp_percentage` numeric(6,4) DEFAULT 0,
   `dsp_balance` numeric(19,2) DEFAULT 0,
   PRIMARY KEY (`dsp_dealer_no`),
   INDEX(`dsp_id`),
@@ -94,7 +94,7 @@ CREATE TABLE `load_transaction` (
   `confirm_no` varchar(30) NOT NULL,
   `date_created` datetime NOT NULL,
   `dealer_no` varchar(30) NOT NULL,
-  `load_percentage` numeric(4,2) DEFAULT 0, 
+  `load_percentage` numeric(6,4) DEFAULT 0, 
   `net_amount` numeric(19,2) NOT NULL,
   `user_name` varchar(50) NOT NULL,
   PRIMARY KEY (`transaction_code`),
@@ -236,7 +236,7 @@ INSERT INTO `strivers`.`global_balance` (`network`, `current_balance`, `global_n
 INSERT INTO `strivers`.`global_balance` (`network`, `current_balance`, `global_name`) VALUES ('SMART', '50000', 'SMART');
 INSERT INTO `strivers`.`am` (`am_code`, `am_location`) VALUES ('Unassigned', 'Unassigned');
 
-INSERT INTO `strivers`.`user` (`username`, `password`, `type`,`firstname`, `lastname`) VALUES ('admin', '21232f297a57a5a743894a0e4a801fc3', 'Mikko','Basilio','admin');
+INSERT INTO `strivers`.`user` (`username`, `password`, `type`,`firstname`, `lastname`) VALUES ('admin', '21232f297a57a5a743894a0e4a801fc3', 'admin','Mikko','Basilio');
 
 
 drop procedure if exists generateInventoryPurchaseReport;
