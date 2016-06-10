@@ -44,7 +44,7 @@
                     <div class="form-group">
                       <label class="control-label col-md-3 col-sm-3 col-xs-12" for="confirmationno">Confirmation No:</label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
-                        <input type="text" name="confirmno" id="confirmno"  required="required" class="form-control col-md-7 col-xs-12">
+                        <input type="text" name="confirmno" id="confirmno"  class="form-control col-md-7 col-xs-12">
                       </div>
                     </div>                                   
                     <div class="form-group">
@@ -129,6 +129,7 @@
                       + currentdate.getHours() + ":"  
                       + ('0' + (currentdate.getMinutes()+1)).slice(-2) + ":"  
                       + ('0' + (currentdate.getSeconds()+1)).slice(-2);
+              var datetime = moment().format('YYYY-MM-DD HH:mm:ss ');
               $("#purchaseorderdate").val(datetime)
             });
           $('#sim').change(function(e){

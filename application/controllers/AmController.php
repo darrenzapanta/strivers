@@ -10,8 +10,9 @@ class AmController extends CI_Controller {
    $this->load->model('dsp','',TRUE);
    $this->load->model('Am','',TRUE);
    $this->load->model('Globalsim','',TRUE);
-   if(!($this->session->userdata('logged_in') == true)){
-      $this->load->view('errors/index');
+   $group = array(1,2,4);
+   if(!($this->ion_auth->in_group($group))){
+      redirect('/LandingController');
    }
    $GLOBALS['data']['name'] = $this->session->userdata('firstname')." ".$this->session->userdata('lastname') ;
  }
@@ -71,10 +72,22 @@ class AmController extends CI_Controller {
  function editAM(){
    $am_location = $this->input->post('location');
    $am_code = $this->input->post('am_code');
+   $am_totalbalance = $this->input->post('totalbalance');
+   if(!is_numeric($am_totalbalance)){
+    return false;
+   }
    $ret = false;
-   $data = array( 
+   if($this->ion_auth->in_group(array(1,2))){
+    $data = array( 
             'am_location' => $am_location,
+            'am_totalbalance' => $am_totalbalance
             );
+   }else{
+     $data = array( 
+              'am_location' => $am_location,
+              );   
+   }
+
    $ret = $this->Am->editAM($data,$am_code);
      if($ret === false){
         header('Content-type: application/json');

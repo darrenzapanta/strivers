@@ -9,8 +9,9 @@ class GlobalController extends CI_Controller {
    $this->load->library('session');
    $this->load->model('dsp','',TRUE);
    $this->load->model('globalSim','',TRUE);
-   if(!($this->session->userdata('logged_in') == true)){
-      $this->load->view('errors/index');
+   $group = array(1,2,4);
+   if(!($this->ion_auth->in_group($group))){
+      redirect('/LandingController');
    }
  }
 

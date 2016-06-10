@@ -71,7 +71,7 @@
           <input type="hidden" id="modalid">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal">&times;</button>
-              <h4 class="modal-title">Edit DSS</h4>
+              <h4 class="modal-title">Edit DSP</h4>
             </div>
             <div class="modal-body container-fluid">
              <div class="row" id="message-info">
@@ -132,12 +132,14 @@
                   </select>
                 </div>
               </div>
+              <?php if($this->ion_auth->in_group(array(1,2))) : ?>
               <div class="form-group col-md-6 col-sm-6 col-xs-12 pull-left">
                 <label class="control-label col-md-3 col-sm-6 col-xs-12">Balance:</label>
                 <div class="col-md-4 col-sm-6 col-xs-12">
                 <input name="newbalance" id="newbalance" type="text" class="form-control" value="0">
                 </div>
               </div>
+              <?php endif; ?>
               <div class="form-group col-md-4 col-sm-6 col-xs-12">
                 <label class="control-label col-md-4 col-sm-6 col-xs-12">Percentage:</label>
                 <div class="col-md-5 col-sm-5 col-xs-12">
@@ -227,10 +229,6 @@
                 container:'#modal1'
               });
               $(":input").inputmask();
-              $("#modal1").on("hidden.bs.modal", function () {
-                  
-                  location.reload();
-              });
 
               $(document).on('click', '.modal-trigger', function(e) {
                 e.preventDefault();
@@ -278,7 +276,18 @@
                       if(data.status == "success"){
                         var msg = data.message;
                         $("#message-info").html('<div class="col-md-12 col-sm-12 col-xs-12 alert alert-info">'+msg+'</div>');
-                        
+                        $("#"+ dsp_id + " .dsp_firstname").html(firstname);
+                        $("#"+ dsp_id + " .dsp_lastname").html(lastname); 
+                        $("#"+ dsp_id + " .sim").html(sim); 
+                        $("#"+ dsp_id + " .dealerno").html(dealerno); 
+                        $("#"+ dsp_id + " .am").html(am); 
+                        $("#"+ dsp_id + " .balance").html(balance); 
+                        $("#"+ dsp_id + " .percentage").html(percentage); 
+                        $("#"+ dsp_id + " .email").html(email); 
+                        $("#"+ dsp_id + " .birthday").html(birthday); 
+                        $("#"+ dsp_id + " .gender").html(gender); 
+                        $("#"+ dsp_id + " .contactno").html(contactno); 
+
                       }else{
                         var msg = data.message;
                         $("#message-info").html('<div class="col-md-12 col-sm-12 col-xs-12 alert alert-danger">'+msg+'</div>');

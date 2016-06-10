@@ -12,8 +12,9 @@ class TransactionController extends CI_Controller {
    $this->load->model('globalsim','',TRUE);
    $this->load->model('Am','',TRUE);
    $this->load->model('Operations','',TRUE);
-   if(!($this->session->userdata('logged_in') == true)){
-      $this->load->view('errors/index');
+   $group = array(1,2,3,4);
+   if(!($this->ion_auth->in_group($group))){
+      redirect('/LandingController');
    }
    $GLOBALS['data']['name'] = $this->session->userdata('firstname')." ".$this->session->userdata('lastname') ;
  }
@@ -21,6 +22,10 @@ class TransactionController extends CI_Controller {
  
  function addTransaction()
  {
+   $group = array(1,2,4);
+   if(!($this->ion_auth->in_group($group))){
+      return false;
+   }   
    //This method will have the credentials validation
    $this->load->library('form_validation');
    $this->form_validation->set_rules('dsp_id', 'Name', 'trim|required|callback_check_dsp');
@@ -35,6 +40,7 @@ class TransactionController extends CI_Controller {
    {
      $GLOBALS['data']['sim'] = $this->globalsim->getAllSim();
      $GLOBALS['data']['dsp'] = $this->dsp->getAllDSP();
+     $GLOBALS['data']['code'] = $this->session->userdata('transaction_code');
      $this->load->view('templates/header', $GLOBALS['data']);
      $this->load->view('addTransaction', $GLOBALS['data']);
      $this->load->view('templates/footer');
@@ -167,47 +173,14 @@ function getTotalRevenue($date1, $date2){
 
 
 
-function check_confirmno($confirmno){
-  if($this->transaction->getTransactionByConfirmno($confirmno) != false){
-    $this->form_validation->set_message('check_confirmno', 'Duplicate Confirmation Number.');
-    return false;
-  }else {
-    return true;
-  }
-}
 
-function check_sim($sim){
-  $result = $this->globalsim->getAllSim();
-  foreach($result as $row){
-    if($sim == $row->global_name)
-      return true;
-  }
-  $this->form_validation->set_message('check_sim', 'Invalid Sim.');
-  return false;
-  
-}
-
-
- function check_dsp($dsp){
-  $dealer_no = $this->input->post('dealerno');
-  $sim = $this->input->post('sim');
-  $result = $this->dsp->getDSPbyDealerno($dealer_no);
-  if($result != false){
-  foreach($result as $row){
-    if($dsp == $row->dsp_id && $dealer_no == $row->dsp_dealer_no && $sim == $row->dsp_network)
-      return true;
-  }
-    $this->form_validation->set_message('check_dsp', 'Invalid Name.');
-    return false;
-  }
-    $this->form_validation->set_message('check_dsp', 'Invalid Name.');
-    return false;
- }
 
  function editTransaction(){
-    if($this->session->userdata('type') != 'admin'){
+
+   $group = array(1,2);
+   if(!($this->ion_auth->in_group($group))){
       return false;
-    }
+   }
    $dsp_id = $this->input->post('dsp_id');
    $trans_id = $this->input->post('trans_id');
    $dealerno = $this->input->post('dealerno');
@@ -248,9 +221,10 @@ function check_sim($sim){
   function editTransaction2()
  {
    //This method will have the credentials validation
-  if($this->session->userdata('type') != 'admin'){
-    return false;
-  }
+   $group = array(1,2);
+   if(!($this->ion_auth->in_group($group))){
+      return false;
+   }   
    $this->load->library('form_validation');
    $this->form_validation->set_rules('dsp_id', 'Name', 'trim|required|callback_check_dsp');
    $this->form_validation->set_rules('dealerno', 'Dealer No', 'trim|required');
@@ -310,7 +284,10 @@ function check_sim($sim){
 }
 
  function deleteTransaction(){
-  if($this->session->userdata('type') == 'admin'){
+   $group = array(1,2);
+   if(!($this->ion_auth->in_group($group))){
+      return false;
+   }   
      $transaction_code= $this->input->post('transaction_code');
      $ret = $this->transaction->deleteTransaction($transaction_code);
        if($ret === false){
@@ -322,7 +299,6 @@ function check_sim($sim){
           $response_array['status'] = 'success';    
           echo json_encode($response_array);
        }  
-     }
  }
 
  function getTransaction(){
@@ -362,6 +338,7 @@ function check_sim($sim){
   function getTransactionUN(){
     $date1 = $this->input->post('date1');
     $date2 = $this->input->post('date2');
+
     if($date1 != " " || $date2 != " "){
       $f_date1 = date("Y-m-d", strtotime($date1));
       $f_date2 = date("Y-m-d", strtotime($date2));
@@ -370,6 +347,7 @@ function check_sim($sim){
       $f_date2 = date("Y-m-d");
     }
       $ret = $this->transaction->getTransactionUNByDate($f_date1, $f_date2);
+
       if($ret != False){
         $rowDef = array();
       foreach($ret as $res){
@@ -392,6 +370,50 @@ function check_sim($sim){
         $result['status'] = 'failed';    
         echo json_encode($result);
       }
+
+
+ }
+
+   function getDetailedTransactionUN(){
+    $date1 = $this->input->post('date1');
+    $date2 = $this->input->post('date2');
+    $name = $this->input->post('name');
+    if($date1 != " " || $date2 != " "){
+      $f_date1 = date("Y-m-d", strtotime($date1));
+      $f_date2 = date("Y-m-d", strtotime($date2));
+    }else{
+      $f_date1 = date("Y-m-d");
+      $f_date2 = date("Y-m-d");
+    }
+      if($name == ""){
+         $ret = $this->transaction->getDetailedAllPaymentUN($f_date1, $f_date2);
+      }else{
+         $ret = $this->transaction->getDetailedAllPaymentUN($f_date1, $f_date2, $name);
+      }
+      header('Content-type: application/json');
+      echo json_encode(array('draw' => 1, 'recordsTotal' => count($ret), 'recordsFiltered' => count($ret), 'data' => $ret, 'status' => 'success'));
+
+
+ }
+
+    function getDetailedTransactionAM(){
+    $date1 = $this->input->post('date1');
+    $date2 = $this->input->post('date2');
+    $am_code = $this->input->post('am');
+    if($date1 != " " || $date2 != " "){
+      $f_date1 = date("Y-m-d", strtotime($date1));
+      $f_date2 = date("Y-m-d", strtotime($date2));
+    }else{
+      $f_date1 = date("Y-m-d");
+      $f_date2 = date("Y-m-d");
+    }
+      if($am_code == "" ||  strtolower($am_code) == 'unassigned' ){
+        $ret = $this->transaction->getDetailedAllPaymentAM($f_date1, $f_date2);
+      }else{
+        $ret = $this->transaction->getDetailedAllPaymentAM($f_date1, $f_date2, $am_code);
+      }
+      header('Content-type: application/json');
+      echo json_encode(array('draw' => 1, 'recordsTotal' => count($ret), 'recordsFiltered' => count($ret), 'data' => $ret, 'status' => 'success'));
 
 
  }
@@ -431,6 +453,10 @@ function check_sim($sim){
  }
 
  function addPaymentAM(){
+   $group = array(1,2,4);
+   if(!($this->ion_auth->in_group($group))){
+      return false;
+   }   
    //This method will have the credentials validation
    $this->load->library('form_validation');
    $this->form_validation->set_rules('amcode', 'Area Manager Code', 'trim|required|callback_check_amid');
@@ -478,16 +504,21 @@ function check_sim($sim){
  }
 
   function addPaymentUN(){
+   $group = array(1,2,4);
+   if(!($this->ion_auth->in_group($group))){
+      return false;
+   }   
    //This method will have the credentials validation
    $this->load->library('form_validation');
-   $this->form_validation->set_rules('transaction_code', 'Transaction Code', 'trim|callback_checktransactionifexist');
-   $this->form_validation->set_rules('dsp_id', 'DSP name', 'trim|required|callback_checkdspifUN');
+   $this->form_validation->set_rules('transaction_code', 'Transaction Code', 'trim');
+   $this->form_validation->set_rules('dsp_id', 'DSP name', 'trim|required|callback_check_dsp');
+   $this->form_validation->set_rules('am_code', 'AM Code', 'trim|required');
    $this->form_validation->set_rules('sim', 'Sim', 'trim|required');
-   $this->form_validation->set_rules('dealer_no', 'Dealer No.', 'trim|required');
+   $this->form_validation->set_rules('dealerno', 'Dealer No.', 'trim|required');
    $this->form_validation->set_rules('paymentmode', 'Mode of Payment', 'trim|required');
    $this->form_validation->set_rules('paymentdate', 'Date of Payment', 'trim|required');
    $this->form_validation->set_rules('confirmno', 'Confirmation Number', 'trim');
-   $this->form_validation->set_rules('amount', 'Amount', 'trim|numeric|required|callback_checkamountifmatch');
+   $this->form_validation->set_rules('amount', 'Amount', 'trim|numeric|required');
    
    if($this->form_validation->run() == FALSE)
    {
@@ -500,7 +531,8 @@ function check_sim($sim){
    {
      $transaction_code = null;
      $dsp_id = $this->input->post('dsp_id');
-     $dealer_no = $this->input->post('dealer_no');
+     $am_code = $this->input->post('am_code');
+     $dealer_no = $this->input->post('dealerno');
      $sim = $this->input->post('sim');
      $date_created = $this->input->post('paymentdate');
      $amount = $this->input->post('amount');
@@ -515,6 +547,7 @@ function check_sim($sim){
       $transaction_code = $this->input->post('transaction_code');
        $data = array(
                    'payment_transaction_code' => $transaction_code,
+                   'am_code' => $am_code,
                    'dsp_id' => $dsp_id,
                    'dsp_name' => $dsp_name,
                    'dealer_no' => $dealer_no,
@@ -528,6 +561,7 @@ function check_sim($sim){
      }else{
        $data = array(
                    'dsp_id' => $dsp_id,
+                   'am_code' => $am_code,
                    'dsp_name' => $dsp_name,
                    'dealer_no' => $dealer_no,
                    'global_name' => $sim,    
@@ -538,13 +572,23 @@ function check_sim($sim){
                    'user_name' => $user_name,                      
                    );
       }
-     $result = $this->dsp->getDSPbyDealerno($dealer_no);
-     foreach($result as $res){
-      $curr_bal = $res->dsp_balance;
+     if($am_code == 'Unassigned'){
+       $result = $this->dsp->getDSPbyDealerno($dealer_no);
+       foreach($result as $res){
+        $curr_bal = $res->dsp_balance;
+       }
+       $run_bal = $this->Operations->subtract($curr_bal, $amount);
+       $totalbalance = array('dsp_balance' => $run_bal);
+     }else{
+       $result = $this->Am->getAMbyCode($am_code);
+        foreach($result as $res){
+          $curr_bal = $res->am_totalbalance;
+        }
+       $run_bal = $this->Operations->subtract($curr_bal, $amount);
+       $totalbalance = array('am_totalbalance' => $run_bal);
      }
-     $run_bal = $this->Operations->subtract($curr_bal, $amount);
-     $totalbalance = array('dsp_balance' => $run_bal);
-     $ret = $this->transaction->addPaymentUN($data, $totalbalance, $dealer_no);
+
+     $ret = $this->transaction->addPaymentUN($data, $totalbalance, $dealer_no, $am_code);
      if($ret === false){
         $this->session->set_flashdata('message', 'Database Error.');  
      }else{
@@ -582,7 +626,10 @@ function check_sim($sim){
  }
 
  function deleteTransactionUN(){
-    if($this->session->userdata('type') == 'admin'){
+   $group = array(1,2);
+   if(!($this->ion_auth->in_group($group))){
+      return false;
+   }   
      $payment_id= $this->input->post('payment_id');
      $ret = $this->transaction->deleteTransactionUN($payment_id);
        if($ret === false){
@@ -594,11 +641,14 @@ function check_sim($sim){
           $response_array['status'] = 'success';    
           echo json_encode($response_array);
        }  
-     }
+     
  }
 
   function deleteTransactionAM(){
-    if($this->session->userdata('type') == 'admin'){
+   $group = array(1,2);
+   if(!($this->ion_auth->in_group($group))){
+      return false;
+   }   
      $payment_id= $this->input->post('payment_id');
      $ret = $this->transaction->deleteTransactionAM($payment_id);
        if($ret === false){
@@ -610,7 +660,7 @@ function check_sim($sim){
           $response_array['status'] = 'success';    
           echo json_encode($response_array);
        }  
-     }
+     
  }
 
 
@@ -660,6 +710,44 @@ function check_sim($sim){
   }
  }
 
+ function check_confirmno($confirmno){
+  if($this->transaction->getTransactionByConfirmno($confirmno) != false){
+    $this->form_validation->set_message('check_confirmno', 'Duplicate Confirmation Number.');
+    return false;
+  }else {
+    return true;
+  }
+}
+
+function check_sim($sim){
+  $result = $this->globalsim->getAllSim();
+  foreach($result as $row){
+    if($sim == $row->global_name)
+      return true;
+  }
+  $this->form_validation->set_message('check_sim', 'Invalid Sim.');
+  return false;
+  
+}
+
+
+ function check_dsp($dsp){
+  $dealer_no = $this->input->post('dealerno');
+  $sim = $this->input->post('sim');
+  $am_code = $this->input->post('am_code');
+  $result = $this->dsp->getDSPbyDealerno($dealer_no);
+  if($result != false){
+  foreach($result as $row){
+    if($dsp == $row->dsp_id && $dealer_no == $row->dsp_dealer_no && $sim == $row->dsp_network && $am_code == $row->am_code)
+      return true;
+  }
+    $this->form_validation->set_message('check_dsp', 'Invalid DSP information.');
+    return false;
+  }
+    $this->form_validation->set_message('check_dsp', 'Invalid DSP.');
+    return false;
+ }
+
   function checkamountifmatch($amount){
   $this->form_validation->set_message('checkamountifmatch', 'The amount is not equal to the net amount of the transaction.');
   if(isset($_POST['transaction_code']) && $_POST['transaction_code'] != ""){
@@ -684,6 +772,9 @@ function check_sim($sim){
  }
 
  function checktransactioncode($transaction_code){
+  if($transaction_code == ""){
+      return true;
+  }
   if($transaction_code == $this->session->userdata('transaction_code') && $this->transaction->getTransactionByTransactionCode($transaction_code) == FALSE){
     return true;
   }else{

@@ -92,6 +92,7 @@
                     </li>
                 </li>
               </ul>
+              <?php if($this->ion_auth->in_group(array(1,2,4)) == TRUE): ?>
                 <li><a><i class="fa fa-edit"></i> Manage Area Manager <span class="fa fa-chevron-down"></span></a>
                   <ul class="nav child_menu" style="display: none">
                     <li><a href="<?php echo site_url(); ?>LandingController/addAM">Add Area Manager</a>
@@ -108,23 +109,30 @@
                     </li>
                   </ul>
                 </li>
+              <?php endif; ?>  
+              <?php if($this->ion_auth->in_group(array(1,2,4)) == TRUE): ?>
                 <li><a><i class="fa fa-table"></i> Manage Transactions <span class="fa fa-chevron-down"></span></a>
                   <ul class="nav child_menu" style="display: none">
-                    <li><a href="<?php echo site_url(); ?>LandingController/addPaymentAM">Add Payment (AM)</a>
-                    </li>
-                    <li><a href="<?php echo site_url(); ?>LandingController/addPaymentUN">Add Payment (UN)</a>
+<!--                     <li><a href="<?php echo site_url(); ?>LandingController/addPaymentAM">Add Payment (AM)</a>
+                    </li> -->
+                  
+                    <li><a href="<?php echo site_url(); ?>LandingController/addPaymentUN">Add Payment</a>
                     </li>
                     <li><a href="<?php echo site_url(); ?>LandingController/addTransaction">Add Load Transaction</a>
                     </li>
+                  <?php endif; ?>    
+                  <?php if($this->ion_auth->in_group(array(1,2,3,4)) == TRUE): ?>
                     <li><a href="<?php echo site_url(); ?>LandingController/viewTransactionAM">View/Delete Payment (AM)</a>
                     </li>
                     <li><a href="<?php echo site_url(); ?>LandingController/viewTransactionUN">View/Delete Payment (UN)</a>
                     </li>
                     <li><a href="<?php echo site_url(); ?>LandingController/viewTransaction">View/Delete Transactions</a>
                     </li>
-
+                  
                   </ul>
                 </li>
+              <?php endif; ?>    
+                <?php if($this->ion_auth->in_group(array(1,2,4)) == TRUE): ?>
                 <li><a><i class="fa fa-list"></i> Manage P . O . <span class="fa fa-chevron-down"></span></a>
                   <ul class="nav child_menu" style="display: none">
                     <li><a href="<?php echo site_url(); ?>LandingController/addPurchaseOrder">Add Purchase Order</a>
@@ -133,6 +141,8 @@
                     </li>
                   </ul>
                 </li>
+                <?php endif; ?>   
+                <?php if($this->ion_auth->in_group(array(1,2,5)) == TRUE): ?>
                 <li><a><i class="fa fa-list"></i> Inventory <span class="fa fa-chevron-down"></span></a>
                   <ul class="nav child_menu" style="display: none">
                     <li><a href="<?php echo site_url(); ?>LandingController/addInventoryItem">Add Item</a>
@@ -153,15 +163,26 @@
                     </li>
                   </ul>
                 </li>
-
-                <li><a><i class="fa fa-unlock-alt"></i> Admin Panel <span class="fa fa-chevron-down"></span></a>
+                <?php endif; ?>
+                <?php if($this->ion_auth->in_group('superadmin') == TRUE): ?>
+                  <li><a><i class="fa fa-unlock-alt"></i> Admin Panel <span class="fa fa-chevron-down"></span></a>
+                    <ul class="nav child_menu" style="display: none">
+                      <li><a href="<?php echo site_url(); ?>LandingController/addSimCard">Add Sim Card</a>
+                      <li><a href="<?php echo site_url(); ?>LandingController/viewSimCard">Manage Sim Cards</a>
+                      <li><a href="<?php echo site_url(); ?>LandingController/addUser">Add User</a>
+                      </li>
+<!--                       <li><a href="<?php echo site_url(); ?>LandingController/deleteUser">Delete User</a>
+                      </li> -->
+                    </ul>
+                  </li>
+                <?php endif; ?>  
+                </li> 
+                <li><a><i class="fa fa-user"></i> Account <span class="fa fa-chevron-down"></span></a>
                   <ul class="nav child_menu" style="display: none">
-                    <li><a href="<?php echo site_url(); ?>LandingController/addPurchaseOrder">Manage Sim Cards</a>
+                    <li><a href="<?php echo site_url(); ?>LandingController/editAccount">Edit Account Information</a>
                     </li>
                   </ul>
-                </li>
-
-                </li>                
+                </li>               
               </ul>
             </div>
 

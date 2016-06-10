@@ -9,8 +9,9 @@ class PurchaseOrderController extends CI_Controller {
    $this->load->library('session');
    $this->load->model('purchaseorder','',TRUE);
    $this->load->model('globalsim','',TRUE);
-   if(!($this->session->userdata('logged_in') == true)){
-      $this->load->view('errors/index');
+   $group = array(1,2,4);
+   if(!($this->ion_auth->in_group($group))){
+      redirect('/LandingController');
    }
    $GLOBALS['data']['name'] = $this->session->userdata('firstname')." ".$this->session->userdata('lastname') ;
  }
@@ -18,6 +19,7 @@ class PurchaseOrderController extends CI_Controller {
  
  function addPurchaseOrder()
  {
+
    //This method will have the credentials validation
    $this->load->library('form_validation');;
    $this->form_validation->set_rules('purchaseorderdate', 'Purchase Order Date', 'trim|required');
@@ -41,14 +43,14 @@ class PurchaseOrderController extends CI_Controller {
      $paymentmode = $this->input->post('paymentmode');
      $referencenumber = $this->input->post('confirmno');
      $amount = $this->input->post('amount');
-     $user_id = $this->session->userdata('userid');
+     $user_name = $this->session->userdata('firstname')." ".$this->session->userdata('lastname');
      $data = array(
                  'global_name' => $sim, 
                  'paymentmode' => $paymentmode,
                  'referencenumber' => $referencenumber,   
                  'amount' => $amount,
                  'date_created' => $date_created,
-                 'user_id' => $user_id,                       
+                 'user_name' => $user_name,                       
                  );
      $ret = $this->purchaseorder->addPurchaseOrder($data);
      if($ret === false){
@@ -187,6 +189,10 @@ function check_sim($sim){
  }
 
  function deletePurchaseOrder(){
+   $group = array(1,2);
+   if(!($this->ion_auth->in_group($group))){
+      return false;
+   }   
    $purchase_id = $this->input->post('purchase_id');
    $ret = $this->purchaseorder->deletePurchaseOrder($purchase_id);
      if($ret === false){

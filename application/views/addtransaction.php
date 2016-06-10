@@ -32,7 +32,13 @@
                         <input type="text" name="transaction_code" id="transaction_code" readonly class="form-control col-md-7 col-xs-12" value="<?php echo $code; ?>">
                       </div>
                     </div> 
-                      
+                    <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="am_code">AM Code:
+                      </label>
+                      <div class="col-md-1 col-sm-6 col-xs-12">
+                        <input type="text" readonly name="am_code" id="am_code"  class="form-control col-md-7 col-xs-12">
+                      </div>
+                    </div> 
                     <div class="form-group">
                       <label class="control-label col-md-3 col-sm-3 col-xs-12" for="name">Name: <span class="required">*</span>
                       </label>
@@ -141,6 +147,7 @@
                 data2["name"] = "<?php echo $dsp_item->dsp_dealer_no; ?>";
                 data2["percentage"] = "<?php echo $dsp_item->dsp_percentage; ?>";
                 data2["dsp_id"] = "<?php echo $dsp_item->dsp_id; ?>";
+                data2["am_code"] = "<?php echo $dsp_item->am_code; ?>";
                 data2["network"] = "<?php echo $dsp_item->dsp_network; ?>";
                 data["value"] = "<?php echo $dsp_item->dsp_firstname." ".$dsp_item->dsp_lastname." (".$dsp_item->dsp_network.")"; ?>";
                 data["data"] = data2;
@@ -175,6 +182,7 @@
                   $("#dealerno").val(suggestion.data["name"]);
                   $("#sim").val((suggestion.data["network"]).toUpperCase())
                   $("#dsp_id").val(suggestion.data["dsp_id"]);
+                  $("#am_code").val(suggestion.data["am_code"]);
                   var percent = suggestion.data["percentage"] * 100;
                   globalpercent = suggestion.data["percentage"];
                   percent = roundToTwo(percent);
@@ -186,6 +194,7 @@
                   $("#dsp_id").val("");
                   $("#sim").val("");
                   $("#runbal").val("");
+                   $("#am_code").val("");
                   $("#begbal").val("");
                   $("#percentage").val("");
                   globalpercent = 0;

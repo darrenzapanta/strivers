@@ -6,6 +6,34 @@ Class Globalsim extends CI_Model
     $this->load->model('Operations','',TRUE);
   }
 
+  function addSimCard($data){
+    $this->db->insert('global_balance', $data);
+    if ($this->db->affected_rows() > 0) {
+      return true;
+    }else {
+      return false;
+    }
+  }
+
+  function editSimCard($data, $global_name){
+    $this->db->where('global_name', $global_name);
+    $this->db->update('global_balance', $data);
+    if ($this->db->affected_rows() >= 0) {
+      return true;
+    }else {
+      return false;
+    }
+  }
+
+  function deleteSimCard($global_name){
+    $this->db->where('global_name', $global_name);
+    $this->db->delete('global_balance');
+    if ($this->db->affected_rows() >= 0) {
+      return true;
+    }else {
+      return false;
+    }
+  } 
   function getCurrentBalance($global_name){
   	$this->db->select('current_balance');
   	$this->db->from('global_balance');

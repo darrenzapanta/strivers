@@ -48,7 +48,7 @@
 
             </div>
           </div>
-          <?php if($this->session->userdata('type') == 'admin'): ?>
+          <?php if($this->ion_auth->in_group(array(1,2))): ?>
           <div class="row">
             <div class="col-md-12 col-sm-12 col-xs-12">
               <div class="x_panel">

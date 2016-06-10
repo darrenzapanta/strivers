@@ -151,7 +151,10 @@
 
         <script type="text/javascript">
           $(document).ready(function() {
-            $('#datatable-buttons').dataTable();
+            $('#datatable-buttons').dataTable({
+              "pageLength": 50,
+              "scrollX": true,
+            });
           });
           TableManageButtons.init();
         </script>

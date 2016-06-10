@@ -142,7 +142,9 @@
 
         <script type="text/javascript">
           $(document).ready(function() {
-            $('#datatable-buttons').dataTable();
+            $('#datatable-buttons').dataTable({
+              "pageLength": 20;
+            });
           });
           TableManageButtons.init();
         </script>

@@ -9,30 +9,29 @@ Class User extends CI_Model
   }
  function login($username, $password)
  {
-   $this->db->select('*');
-   $this -> db -> from('user');
-   $this -> db -> where('username', $username);
-   $this -> db -> where('password', MD5($password));
-   $this -> db -> limit(1);
- 
-   $query = $this -> db -> get();
- 
+
+   if($this->ion_auth->login($username, $password, FALSE) == TRUE){
+        $rows = $this->ion_auth->user()->row();
+        $newdata = array(
+          'user_id' => $rows->id,
+          'firstname'  => $rows->first_name,
+          'lastname'    => $rows->last_name,
+        );
+       $this->session->set_userdata($newdata);    
+       return true;
+   }else{
+    return false;
+   }
+ }
+
+ function getUserbyID($user_id){
+
+  $this->db-> where('user_id', $user_id);
+  $this->db->from('user');
+  $query = $this->db->get();
    if($query -> num_rows() == 1)
    {
-    foreach($query->result() as $rows)
-       {
-        $newdata = array(
-          'userid' => $rows->user_id,
-          'username'  => $rows->username,
-          'firstname'  => $rows->firstname,
-          'lastname'    => $rows->lastname,
-          'type'    => $rows->type,
-          'logged_in' => true
-        );
-       }
-       $this->session->set_userdata($newdata);
-       
-       return true;
+      return $query->result();
    }
    else
    {
@@ -57,6 +56,12 @@ Class User extends CI_Model
    }
 
  }
+
+ function getAllUser(){
+  $this->db->from('user');
+  $query = $this->db->get();
+  return $query->result();
+ }
  function register($data){
   $this->db->insert('user', $data);
   if ($this->db->affected_rows() > 0) {
@@ -66,13 +71,11 @@ Class User extends CI_Model
   }
  }
 
- function editprofile($data){
-  $username = $this->session->userdata('username');
-  $this->db->where('username', $username);
+ function editAccount($data, $user_id){
+  $this->db->where('user_id', $user_id);
   $this->db->update('user', $data);
-  if ($this->db->affected_rows() > 0) {
-      $this->session->set_userdata('firstname', $data['firstname']);
-      $this->session->set_userdata('lastname', $data['lastname']);
+  if ($this->db->affected_rows() >= 0) {
+      $this->session->set_userdata('username', $data['username']);
       return true;
   }else {
       return false;

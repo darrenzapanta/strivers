@@ -67,12 +67,19 @@
                       <label for="newlocation">Location:</label>
                       <input class="form-control" id="newlocation" type="text" class="validate">
               </div>
-
+              <?php if($this->ion_auth->in_group(array(1,2))): ?>
+              <div class="form-group">
+                <label>Total Balance: </label>
+                <input type="text" class="form-control" id="newtotalbalance" name="newtotalbalance"/>
+              </div>
+              <?php endif; ?>
             </div>
             <div class="modal-footer">
               <div class="row">
                 <button id="edit" type="button" class="btn btn-success" >Save</button>
+                <?php if($this->ion_auth->in_group(array(1,2))): ?>
                 <button id="delete" type="button" class="btn btn-danger" data-dismiss="modal">Delete</button>
+                <?php endif; ?>
               </div>
             </div>
           </div>
@@ -143,6 +150,7 @@
                 $('#modalid').val(dataid);
                 $('#newcode').val($("#"+ dataid + " .am_code").html());
                 $('#newlocation').val($("#"+ dataid + " .location").html());
+                $('#newtotalbalance').val($("#"+ dataid + " .totalbalance").html());
 
               });    
 
@@ -152,11 +160,12 @@
                 e.preventDefault();
                 var am_code = $("#newcode").val();
                 var location = $("#newlocation").val();
+                var totalbalance = $("#newtotalbalance").val();
                 $.ajax({
                   method: 'POST',
                     url: path + "/" + app + "/editAM",
                     cache: false,
-                    data: {am_code: am_code, location: location},
+                    data: {am_code: am_code, location: location, totalbalance: totalbalance},
                     async:false,
                     success: function (data){
                       if(data.status == "success"){
@@ -165,6 +174,7 @@
                         $("#message-info").html('<div class="col-md-12 col-sm-12 col-xs-12 alert alert-info">'+msg+'</div>');
                         $("#"+ am_code + " .am_code").html(am_code);
                         $("#"+ am_code + " .location").html(location);
+                        $("#"+ am_code + " .totalbalance").html(totalbalance);
                         
                       }else{
                         var msg = data.message;

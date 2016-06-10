@@ -176,7 +176,10 @@
                 "createdRow": function( row, data, dataIndex ) {
 
                     if(data['transaction_code'] != "None"){
-                      $('td:eq(11)', row).append("<a data-id = '"+data['transaction_code']+"' class='btn btn-danger deleteitem'>Delete</a>");
+                        <?php if($this->ion_auth->in_group(array(1,2))) : ?>
+                          $('td:eq(11)', row).append("<a data-id = '"+data['transaction_code']+"' class='btn btn-danger deleteitem'>Delete</a>");
+                        <?php endif; ?>                      
+                      
                       
                       //$(row).attr('data-toggle', 'modal');
                       //$(row).attr('data-target', '#modal1');

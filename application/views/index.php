@@ -20,15 +20,6 @@
                 </div>
               </div>              
             <?php endforeach ?>
-
-            <div class="animated flipInY col-lg-3 col-md-3 col-sm-6 col-xs-12">
-              <div class="tile-stats">
-                <div class="icon"><i class="fa  fa-check-circle-o"></i>
-                </div>
-                <div class="count"><?php echo $transaction ?></div>
-                <h3>Total Transactions</h3>
-              </div>
-            </div>
           </div>
 
           <div class="row">
@@ -62,38 +53,6 @@
                   </div>
                   </div>
                   </div>
-                <?php foreach ($topDSP as $dsp_item): ?>
-                <div class="col-md-3 col-sm-12 col-xs-12">
-                    <div class="x_panel">
-                      <div class="x_title">
-                        <h2>Top DSP 5 (<?php echo $dsp_item['global_name'] ?>)</h2><small>Weekly</small>
-                        <ul class="nav navbar-right panel_toolbox">
-                          <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                          </li>
-                        </ul>
-                        <div class="clearfix"></div>
-                      </div>
-                      
-                      <div class="x_content" style="display:none">
-                      <ul class="list-unstyled top_profiles scroll-view">
-                      <?php foreach ($dsp_item['data'] as $data_item): ?>
-                        <li class="media event">
-                          <a class="pull-left border-aero profile_thumb">
-                            <i class="fa fa-user aero"></i>
-                          </a>
-                          <div class="media-body">
-                            <a class="title" href="#"><?php echo $data_item->dsp_firstname." ".$data_item->dsp_lastname ?></a>
-                            <p><strong>₱<?php echo $data_item->amount ?> </strong> Total Transaction Amount.</p>
-                          </div>
-                        </li>
-                        <?php endforeach ?>
-                      </ul>
-                    </div>
-                    
-                  </div>
-
-                </div>
-                <?php endforeach ?>
               </div>
             </div>
           </div>

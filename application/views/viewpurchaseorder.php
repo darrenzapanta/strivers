@@ -158,8 +158,10 @@
                     extend: "print",
                     className: "btn-sm"
                   }],
-                "createdRow": function( row, data, dataIndex ) {
+                "createdRow": function( row, data, dataIndex ) {  
+                  <?php if($this->ion_auth->in_group(array(1,2))) : ?>
                     $('td:eq(5)', row).append("<a data-id = '"+data['purchase_id']+"' class='btn btn-danger deleteitem'>Delete</a>");
+                  <?php endif; ?>
                   },
                   responsive: true,
                   'columnDefs': [

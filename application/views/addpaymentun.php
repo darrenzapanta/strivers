@@ -33,6 +33,13 @@
                       </div>
                     </div> 
                     <div class="form-group">
+                      <label class="control-label col-md-3 col-sm-3 col-xs-12" for="am_code">AM Code:
+                      </label>
+                      <div class="col-md-1 col-sm-6 col-xs-12">
+                        <input type="text" readonly name="am_code" id="am_code"  class="form-control col-md-7 col-xs-12">
+                      </div>
+                    </div> 
+                    <div class="form-group">
                       <label class="control-label col-md-3 col-sm-3 col-xs-1 2" for="name">DSP Name: <span class="required">*</span>
                       </label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
@@ -42,7 +49,7 @@
                     <div class="form-group col-md-6 col-sm-6 col-xs-12 pull-left">
                       <label class="control-label col-md-6 col-sm-6 col-xs-12" for="dealerno">Dealer No:</label>
                       <div class="col-md-4 col-sm-5 col-xs-1">
-                        <input type="text" name="dealer_no" id="dealer_no"  readonly class="form-control">
+                        <input type="text" name="dealerno" id="dealerno"  readonly class="form-control">
                       </div>
                     </div>
                     <div class="form-group col-md-4 col-sm-6 col-xs-12">
@@ -62,7 +69,7 @@
                     <div class="form-group">
                       <label class="control-label col-md-3 col-sm-3 col-xs-12" for="confirmationno">Confirmation No:</label>
                       <div class="col-md-6 col-sm-6 col-xs-12">
-                        <input type="text" name="confirmno" id="confirmno"  required="required" class="form-control col-md-7 col-xs-12">
+                        <input type="text" name="confirmno" id="confirmno"   class="form-control col-md-7 col-xs-12">
                       </div>
                     </div>                      
                     <div class="form-group">
@@ -159,6 +166,7 @@
                 data2["name"] = "<?php echo $dsp_item->dsp_dealer_no; ?>";
                 data2["dsp_id"] = "<?php echo $dsp_item->dsp_id; ?>";
                 data2["network"] = "<?php echo $dsp_item->dsp_network; ?>";
+                data2["am_code"] = "<?php echo $dsp_item->am_code; ?>";
                 data["value"] = "<?php echo $dsp_item->dsp_firstname." ".$dsp_item->dsp_lastname." (".$dsp_item->dsp_network.")"; ?>";
                 data["data"] = data2;
                 names.push(data);
@@ -189,17 +197,16 @@
               $("#name").autocomplete({
                 lookup: names, 
                 onSelect: function(suggestion){
-                  $("#dealer_no").val(suggestion.data["name"]);
+                  $("#dealerno").val(suggestion.data["name"]);
                   $("#sim").val((suggestion.data["network"]).toUpperCase())
                   $("#dsp_id").val(suggestion.data["dsp_id"]);
-                  $("#sim").change();
+                  $("#am_code").val(suggestion.data["am_code"]);
                 },
                 onInvalidateSelection: function(){
-                  $("#dealer_no").val("");
+                  $("#dealerno").val("");
                   $("#dsp_id").val("");
+                  $("#am_code").val("")
                   $("#sim").val("");
-                  $("#runbal").val("");
-                  $("#begbal").val("");
 
 
                 },

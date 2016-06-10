@@ -85,6 +85,44 @@
             </div>
           </div>
         <?php endif; ?>
+          <?php if($this->ion_auth->in_group(array(1,2))): ?>
+          <div class="row">
+            <div class="col-md-12 col-sm-12 col-xs-12">
+              <div class="x_panel">
+                    <div class="x_title">
+                      <h2>Delete</h2>
+                      <div class="clearfix"></div>
+                    </div> 
+                  <h1>Delete Sales Payment</h1>   
+ 
+                  <div class="form-group">
+                       <div class="col-md-4 col-sm-9 col-xs-12">
+                        <select id="type" class="form-control type">
+                          <option value="sales">Sales Code:</option>
+                        </select>
+                      </div>
+                      <div class="col-md-8 col-sm-9 col-xs-12">
+                        <input id="delete2" class="delete form-control">
+                      </div>
+                    </div>
+
+                    <br>
+                    <br>
+                    <br>
+                  <div class="row" id="msg2">
+                  </div> 
+                    <div class="clearfix"></div>
+                    <div class="ln_solid"></div>
+                    <div class="form-group">
+                      <div class="col-md-12 col-sm-9 col-xs-12 col-md-offset-5">
+                        <button id="deletebtn2" type="submit" class="btn btn-danger col-md-2">Delete</button>
+                      </div>
+                    </div>
+              </div>
+
+            </div>
+          </div>
+        <?php endif; ?>
           <div class="row">
           <div class="col-md-12 col-sm-12 col-xs-12">
               <div class="x_panel">
@@ -147,6 +185,7 @@
                     }
                   },
                   "pageLength": 50,
+                  "scrollX": true,
                   'columnDefs': [
                   {
                       'targets': 0,
@@ -311,6 +350,38 @@
                             '<p>'+data.message+'</p></div>')
                           }else if(data.status == 'success'){
                             $('#msg').html('<div class="col-md-8 col-md-offset-2 col-sm-12 col-xs-12 alert alert-danger">' +
+                            '<p>Deleted successfully.</p></div>')
+                            $('#datatable-buttons').dataTable().fnClearTable();
+                          }
+                          
+                        },
+                        error: function (data){
+                          alert("Error has occurred.");
+                        } 
+                    });                     
+                }
+              
+              });     
+            });
+            $('#deletebtn2').click(function(){
+            var res = false;
+            bootbox.confirm("<h3>Are you sure you want to delete?</h3>", function(result) {
+              res = result;
+              if(res == true){
+                var sales_code = $("#delete2").val();     
+                    $.ajax({
+                      method: 'POST',
+                        url: path + "/" + app + "/deleteSalesPaymentTransaction",
+                        cache: false,
+                        data: {sales_code: sales_code},
+                        async:false,
+                        success: function (data){                     
+                          
+                          if(data.status == "failed"){
+                            $('#msg2').html('<div class="col-md-8 col-md-offset-2 col-sm-12 col-xs-12 alert alert-danger">' +
+                            '<p>'+data.message+'</p></div>')
+                          }else if(data.status == 'success'){
+                            $('#msg2').html('<div class="col-md-8 col-md-offset-2 col-sm-12 col-xs-12 alert alert-danger">' +
                             '<p>Deleted successfully.</p></div>')
                             $('#datatable-buttons').dataTable().fnClearTable();
                           }

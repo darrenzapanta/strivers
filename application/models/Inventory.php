@@ -239,10 +239,13 @@ function deleteSalesTransaction($sales_code){
 	$this->db->trans_start();
     $result = null;
     $ret = false;
-    $result = $this->getSalesTransactionBySalesCode($sales_code);
-    
+    $this->db->select('*');
+    $this->db->from('inventory_sales_items');
+    $this->db->where('sales_code', $sales_code);
+    $query = $this->db->get();
+
     $data = array();
-    foreach($result as $res){
+    foreach($query->result() as $res){
       	$result2 = $this->getInventoryItem($res->item_code);
       	foreach($result2 as $res2){
       		$run_stock = $res2->item_stock + $res->sales_amount;
@@ -252,10 +255,14 @@ function deleteSalesTransaction($sales_code){
           'item_stock' => $run_stock,
           );
       }
-	$this->db->update_batch('inventory_items', $data, 'item_code');
-	$this->db->where('sales_code', $sales_code);
-	$this->db->delete('inventory_sales');
-	$this->db->trans_complete();
+    if($query->num_rows() > 0){
+		$this->db->update_batch('inventory_items', $data, 'item_code');
+		$this->db->where('sales_code', $sales_code);
+		$this->db->delete('inventory_sales');
+		$this->db->trans_complete();
+	}else{
+		return 'Unable to find the Sales Transaction with sales code: '.$sales_code;
+	}
 	if($this->db->trans_status() === false){
 		return false;
 	}else{
@@ -263,6 +270,19 @@ function deleteSalesTransaction($sales_code){
 	}
 }
 
+function deleteSalesPaymentTransaction($sales_code){
+	$this->db->from('inventory_sales_payment');
+	$this->db->where('sales_code', $sales_code);
+	$query = $this->db->get();
+	if($query->num_rows() > 0){
+		$this->db->where('sales_code', $sales_code);
+		$this->db->delete('inventory_sales_payment');
+		return true;
+	}else{
+		return 'Unable to find the Payment Transaction with sales code: '.$sales_code;
+	}
+
+}
 function deletePurchaseTransaction($purchase_code){
 	$this->db->trans_start();
     $result = null;

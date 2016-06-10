@@ -153,6 +153,20 @@ Class Dsp extends CI_Model
 
  }
 
+ function getDSPBalance($dsp_dealer_no){
+  	$this->db->select('dsp_balance');
+  	$this->db->from('dsp_details');
+  	$this->db->where('dsp_dealer_no', $dsp_dealer_no);
+  	$query = $this->db->get();
+  	if($query->num_rows() == 1){
+  		foreach($query->result() as $row){
+  			return $row->dsp_balance;
+  		}
+  	}else{
+  		return false;
+  	}
+ }
+
  function getAllDSPbyAM($am_code){
  	$this->db->select('*');
   	$this->db->from('dsp');

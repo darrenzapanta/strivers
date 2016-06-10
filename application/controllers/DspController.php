@@ -11,8 +11,9 @@ class DspController extends CI_Controller {
    $this->load->model('Am','',TRUE);
    $this->load->model('Globalsim','',TRUE);
    $this->load->model('Operations','',TRUE);
-   if(!($this->session->userdata('logged_in') == true)){
-      $this->load->view('errors/index');
+   $group = array(1,2,4);
+   if(!($this->ion_auth->in_group($group))){
+      redirect('/LandingController');
    }
    $GLOBALS['data']['name'] = $this->session->userdata('firstname')." ".$this->session->userdata('lastname') ;
  }
@@ -37,7 +38,7 @@ class DspController extends CI_Controller {
    $this->form_validation->set_rules('contactno', 'Contact Number', 'trim');
    $this->form_validation->set_rules('sim', 'Sim', 'trim|required|callback_check_sim');
    $this->form_validation->set_rules('am', 'Area Manager', 'trim|required|callback_check_am');
-   $this->form_validation->set_rules('percentage', 'Percentage', 'trim|numeric|required');
+   $this->form_validation->set_rules('percentage', 'Percentage', 'trim|numeric|required|less_than[4]');
    $this->form_validation->set_rules('balance', 'Balance', 'trim|numeric|required');
    
    if($this->form_validation->run() == FALSE)
@@ -183,7 +184,7 @@ function check_sim($sim){
    $this->form_validation->set_rules('contactno', 'Contact Number', 'trim');
    $this->form_validation->set_rules('sim', 'Sim', 'trim|required|callback_check_sim');
    $this->form_validation->set_rules('am', 'Area Manager', 'trim|required|callback_check_am');
-   $this->form_validation->set_rules('percentage', 'Percentage', 'trim|numeric');
+   $this->form_validation->set_rules('percentage', 'Percentage', 'trim|numeric|less_than[4]');
    $this->form_validation->set_rules('balance', 'Balance', 'trim|numeric');
    
    if($this->form_validation->run() == FALSE)
@@ -217,7 +218,7 @@ function check_sim($sim){
                'am_code' => $am,
                'dsp_gender' => $gender
                );
-     if($this->session->userdata('type') == 'admin'){
+     if($this->ion_auth->in_group(array(1,2))){
      $data2 =  array(
                     'dsp_network' => $sim,
                     'dsp_dealer_no' => $dealerno,

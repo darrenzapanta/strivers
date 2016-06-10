@@ -9,9 +9,12 @@ class InventoryController extends CI_Controller {
    $this->load->library('session');  
    $this->load->model('Inventory','',TRUE);
    $GLOBALS['data']['name'] = $this->session->userdata('firstname')." ".$this->session->userdata('lastname') ;
+   $group = array(1,2,5);
+   if(!($this->ion_auth->in_group($group))){
+      redirect('/LandingController');
+   }
  }
-private $stock_data;
-private $temp_quantity;
+
 
 function addInventoryItem(){
    $this->load->library('form_validation');
@@ -311,6 +314,9 @@ function generateInventoryReport(){
       'title'=> $temp_date.' (IN)',
       'data'=> $i+2,
       );
+      if($type == 1){
+        $columnData['class'] = 'info';
+      }
       $columnDef[] = $columnData;
       $i++;          
     }  
@@ -320,6 +326,9 @@ function generateInventoryReport(){
           'title'=> $temp_date.' (OUT)',
           'data'=> $i+2,
           );
+      if($type == 1){
+        $columnData['class'] = 'danger';
+      }
       $columnDef[] = $columnData;
       $i++;
     }      
@@ -437,7 +446,7 @@ function editInventoryItem(){
      $data['item_name'] = $item_name;
      $data['item_category'] = $item_category;
      $data['item_cost'] = $item_cost;
-     if($this->session->userdata('type') == 'admin'){
+     if($this->ion_auth->in_group(array(1,2))){
       $data['item_stock'] = $item_stock;
      }
      $ret = $this->Inventory->editInventoryItem($data, $item_code);
@@ -456,7 +465,7 @@ function editInventoryItem(){
 }
 
  function deleteInventoryItem(){
-  if($this->session->userdata('type') == 'admin'){
+  if($this->ion_auth->in_group(array(1,2))){
    $item_code = $this->input->post('item_code');
    $ret = $this->Inventory->deleteInventoryItem($item_code);
      if($ret === false){
@@ -634,19 +643,55 @@ function editInventoryItem(){
  }
 
 function deleteSalesTransaction(){
-  if($this->session->userdata('type') == 'admin' && $_POST['sales_code'] != ''){
+  if($this->ion_auth->in_group(array(1,2)) && $_POST['sales_code'] != ''){
     $sales_code = $this->input->post('sales_code');
     $ret = $this->Inventory->deleteSalesTransaction($sales_code);
   
      if($ret === false){
         header('Content-type: application/json');
-        $response_array['status'] = 'failed';    
+        $response_array['status'] = 'failed';  
+        $response_array['message'] = "Error has occured. Unable to delete.";    
+        echo json_encode($response_array);
+     }elseif(gettype($ret) == "string"){
+        header('Content-type: application/json');
+        $response_array['status'] = 'failed';  
+         $response_array['message'] = $ret;  
         echo json_encode($response_array);
      }else{
         header('Content-type: application/json');
         $response_array['status'] = 'success';    
+        $response_array['message'] = 'Deleted Successfully. (Sales Code: '.$sales_code.')';
         echo json_encode($response_array);
-        $this->session->set_flashdata('message', 'Deleted Successfully. (Sales Code: '.$sales_code.')');
+     }
+  }else{
+      header('Content-type: application/json');
+      $response_array['status'] = 'failed';    
+      $response_array['message'] = 'Unable to delete.'; 
+      echo json_encode($response_array);   
+
+  }
+}
+
+function deleteSalesPaymentTransaction(){
+  if($this->ion_auth->in_group(array(1,2)) && $_POST['sales_code'] != ''){
+    $sales_code = $this->input->post('sales_code');
+    $ret = $this->Inventory->deleteSalesPaymentTransaction($sales_code);
+  
+     if($ret === false){
+        header('Content-type: application/json');
+        $response_array['status'] = 'failed';  
+        $response_array['message'] = "Error has occured. Unable to delete.";    
+        echo json_encode($response_array);
+     }elseif(gettype($ret) == "string"){
+        header('Content-type: application/json');
+        $response_array['status'] = 'failed';  
+         $response_array['message'] = $ret;  
+        echo json_encode($response_array);
+     }else{
+        header('Content-type: application/json');
+        $response_array['status'] = 'success';    
+        $response_array['message'] = 'Deleted Successfully. (Sales Code: '.$sales_code.')';
+        echo json_encode($response_array);
      }
   }else{
       header('Content-type: application/json');
@@ -658,7 +703,7 @@ function deleteSalesTransaction(){
 }
 
 function deletePurchaseTransaction(){
-  if($this->session->userdata('type') == 'admin' && $_POST['purchase_code'] != ''){
+  if($this->ion_auth->in_group(array(1,2)) && $_POST['purchase_code'] != ''){
     $purchase_code = $this->input->post('purchase_code');
     $ret = $this->Inventory->deletePurchaseTransaction($purchase_code);
   
